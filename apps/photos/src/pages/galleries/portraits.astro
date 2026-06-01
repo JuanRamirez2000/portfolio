@@ -1,0 +1,18 @@
+---
+import GalleryLayout from '../../layouts/GalleryLayout.astro';
+
+const photos: Array<{ ratio: 'tall' | 'wide' | 'sq' }> = [
+  { ratio: 'tall' }, { ratio: 'sq' }, { ratio: 'tall' },
+  { ratio: 'wide' }, { ratio: 'tall' }, { ratio: 'sq' },
+  { ratio: 'tall' }, { ratio: 'wide' }, { ratio: 'tall' },
+  { ratio: 'sq' }, { ratio: 'tall' }, { ratio: 'wide' },
+];
+---
+
+<GalleryLayout
+  title="Portraits — juanr.photo"
+  galleryName="Portraits"
+  tagline="faces, moods, and the occasional glare"
+  heroLabel="portraits hero image"
+  photos={photos}
+/>

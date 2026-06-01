@@ -1,0 +1,104 @@
+---
+import Base from '../../layouts/Base.astro';
+import Nav from '../../components/Nav.astro';
+
+const photos: Array<{ ratio: 'tall' | 'wide' | 'sq' }> = [
+  { ratio: 'tall' }, { ratio: 'sq' }, { ratio: 'wide' },
+  { ratio: 'tall' }, { ratio: 'tall' }, { ratio: 'sq' },
+  { ratio: 'wide' }, { ratio: 'tall' }, { ratio: 'sq' },
+];
+
+const ratioClass: Record<string, string> = {
+  tall: 'aspect-[3/4]',
+  wide: 'aspect-[4/3]',
+  sq:   'aspect-square',
+};
+---
+
+<Base title="Boudoir — juanr.photo">
+  <div class="bg-bg font-sans text-ink antialiased">
+
+    <!-- AGE GATE OVERLAY -->
+    <div
+      id="age-gate"
+      class="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-md p-6"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="age-gate-title"
+    >
+      <div class="bg-surface border border-line rounded-[28px] shadow-[0_24px_60px_-16px_oklch(0_0_0/0.5)] px-9 py-10 max-w-[420px] w-full text-center flex flex-col gap-4">
+        <span class="self-center font-mono text-[12px] font-medium text-warn-text bg-warn-bg border border-[oklch(0.84_0.07_25)] rounded-full px-3 py-1">18+</span>
+        <h2 id="age-gate-title" class="font-display font-semibold text-[26px] tracking-[-0.01em]">Age Verification</h2>
+        <p class="text-[15px] text-ink-soft leading-[1.6] max-w-[34ch] mx-auto">
+          This gallery contains intimate, 18+ content. By entering you confirm that you are 18 years of age or older.
+        </p>
+        <div class="flex flex-col gap-2.5 mt-2">
+          <button
+            id="age-confirm"
+            class="font-medium text-[15px] bg-ink text-bg border-none rounded-full px-6 py-3.5 cursor-pointer transition-opacity duration-150 hover:opacity-85"
+          >
+            I am 18 or older — Enter
+          </button>
+          <a href="/" class="font-mono text-[13px] text-ink-soft no-underline px-2 py-2 rounded-full transition-colors duration-150 hover:text-ink">
+            Take me back
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <Nav />
+
+    <!-- HERO -->
+    <header class="relative h-screen min-h-[600px] grid place-items-center overflow-hidden">
+      <div class="absolute inset-0 ph border-0 rounded-none" style="background:repeating-linear-gradient(45deg,oklch(0.42 0.012 250) 0 16px,oklch(0.38 0.012 250) 16px 32px)">
+        <span class="tag" style="background:oklch(0 0 0/0.35);color:oklch(1 0 0/0.9);border-color:oklch(1 0 0/0.25)">boudoir hero image</span>
+      </div>
+      <div class="absolute inset-0 bg-[linear-gradient(180deg,oklch(0_0_0/0.35)_0%,oklch(0_0_0/0.05)_35%,oklch(0_0_0/0.45)_100%)]" aria-hidden="true"></div>
+      <div class="relative text-center text-white px-6 z-10">
+        <div class="font-mono text-[13px] tracking-[0.18em] uppercase opacity-85 mb-4.5">GALLERY · 18+</div>
+        <h1 class="font-display font-medium text-[clamp(44px,7vw,84px)] leading-none tracking-[-0.01em] [text-shadow:0_2px_20px_oklch(0_0_0/0.4)]">Boudoir</h1>
+        <p class="text-[17px] mt-5 opacity-[0.92]">intimate, intentional, 18+</p>
+      </div>
+      <div class="absolute bottom-7.5 left-1/2 -translate-x-1/2 z-10 text-white/85 font-mono text-[11px] tracking-[0.1em] flex flex-col items-center gap-2" aria-hidden="true">
+        <span>PHOTOS</span>
+        <span class="w-px h-8.5 bg-white/60"></span>
+      </div>
+    </header>
+
+    <!-- GALLERY GRID -->
+    <section class="py-20 pb-24 w-full max-w-[1180px] mx-auto px-8">
+      <div class="columns-1 sm:columns-2 lg:columns-3 gap-4.5">
+        {photos.map((photo) => (
+          <div class:list={['break-inside-avoid mb-4.5 rounded-[20px] overflow-hidden ph', ratioClass[photo.ratio]]}>
+            <span class="tag">photo · {photo.ratio}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-line">
+      <div class="w-full max-w-[1180px] mx-auto px-8 py-11 flex items-center justify-between flex-wrap gap-3.5 font-mono text-[12.5px] text-ink-soft">
+        <span class="font-display font-semibold text-[18px] text-ink">juanr.photo</span>
+        <span>© Juan R. — all the good light reserved</span>
+      </div>
+    </footer>
+  </div>
+</Base>
+
+<script>
+  const STORAGE_KEY = 'age_confirmed_boudoir';
+  const gate = document.getElementById('age-gate')!;
+
+  if (localStorage.getItem(STORAGE_KEY) === 'true') {
+    gate.style.display = 'none';
+  } else {
+    document.body.style.overflow = 'hidden';
+  }
+
+  document.getElementById('age-confirm')!.addEventListener('click', () => {
+    localStorage.setItem(STORAGE_KEY, 'true');
+    gate.style.display = 'none';
+    document.body.style.overflow = '';
+  });
+</script>

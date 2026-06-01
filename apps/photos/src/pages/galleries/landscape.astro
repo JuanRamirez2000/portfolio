@@ -1,0 +1,18 @@
+---
+import GalleryLayout from '../../layouts/GalleryLayout.astro';
+
+const photos: Array<{ ratio: 'tall' | 'wide' | 'sq' }> = [
+  { ratio: 'wide' }, { ratio: 'wide' }, { ratio: 'sq' },
+  { ratio: 'tall' }, { ratio: 'wide' }, { ratio: 'wide' },
+  { ratio: 'sq' }, { ratio: 'wide' }, { ratio: 'tall' },
+  { ratio: 'wide' }, { ratio: 'sq' }, { ratio: 'wide' },
+];
+---
+
+<GalleryLayout
+  title="Landscape — juanr.photo"
+  galleryName="Landscape"
+  tagline="the world when nobody's looking"
+  heroLabel="landscape hero image"
+  photos={photos}
+/>

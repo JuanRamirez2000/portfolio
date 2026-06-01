@@ -1,0 +1,48 @@
+@import "tailwindcss";
+@import "@portfolio/tokens/tokens.css";
+@plugin "daisyui" { themes: false; }
+
+@theme {
+  --font-sans: "DM Sans", system-ui, sans-serif;
+  --font-display: Fredoka, system-ui, sans-serif;
+  --font-mono: "DM Mono", ui-monospace, monospace;
+
+  --color-ink: oklch(0.28 0.013 95);
+  --color-ink-soft: oklch(0.52 0.012 95);
+  --color-surface: oklch(1 0 0);
+  --color-surface-2: oklch(0.945 0.009 95);
+  --color-line: oklch(0.88 0.012 95);
+  --color-bg: oklch(0.985 0.006 95);
+  --color-peach: oklch(0.86 0.066 55);
+  --color-peach-deep: oklch(0.72 0.10 50);
+  --color-sage: oklch(0.86 0.055 150);
+  --color-sage-deep: oklch(0.62 0.085 150);
+  --color-warn-bg: oklch(0.92 0.05 25);
+  --color-warn-text: oklch(0.45 0.11 25);
+
+  --shadow-card: 0 10px 30px -14px oklch(0.4 0.03 60 / 0.28);
+  --shadow-raised: 0 18px 38px -16px oklch(0.4 0.03 60 / 0.4);
+}
+
+.ph {
+  position: relative;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: repeating-linear-gradient(
+    45deg,
+    var(--color-surface-2) 0 10px,
+    var(--color-surface) 10px 20px
+  );
+  border: 1.5px dashed var(--color-line);
+  color: var(--color-ink-soft);
+}
+.ph .tag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  background: var(--color-bg);
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--color-line);
+  white-space: nowrap;
+}

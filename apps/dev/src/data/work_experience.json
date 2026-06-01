@@ -1,0 +1,47 @@
+[
+  {
+    "title": "Senior Software Engineer",
+    "company": "Placeholder Labs",
+    "start": "2024",
+    "end": "now",
+    "description": "Leading a small team building things users mostly enjoy. Short, punchy line about impact goes right here.",
+    "tags": ["TypeScript", "React", "Leadership"],
+    "current": true
+  },
+  {
+    "title": "Software Engineer",
+    "company": "Some Startup",
+    "start": "2022",
+    "end": "2024",
+    "description": "Shipped features fast, broke prod twice, learned a lot. One sentence of bragging fits comfortably on this line.",
+    "tags": ["Node", "Postgres"],
+    "current": false
+  },
+  {
+    "title": "Junior Developer",
+    "company": "First Real Job Co.",
+    "start": "2020",
+    "end": "2022",
+    "description": "Where it all began. Placeholder description of early-career heroics and questionable git history.",
+    "tags": ["Python", "Django"],
+    "current": false
+  },
+  {
+    "title": "Freelance / Side Quests",
+    "company": "My Bedroom",
+    "start": "2018",
+    "end": "2020",
+    "description": "Built websites for friends, family, and that one guy who never paid. Character development.",
+    "tags": ["HTML", "CSS", "Hustle"],
+    "current": false
+  },
+  {
+    "title": "Computer Science, B.S.",
+    "company": "A University",
+    "start": "2014",
+    "end": "2018",
+    "description": "Learned the theory, forgot the theory, relearned it via Stack Overflow.",
+    "tags": ["Algorithms", "Coffee"],
+    "current": false
+  }
+]

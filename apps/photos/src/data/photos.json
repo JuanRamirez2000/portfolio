@@ -1,0 +1,23 @@
+[
+  {
+    "filename": "placeholder-portrait.jpg",
+    "title": "Placeholder Portrait",
+    "alt": "A placeholder portrait photograph to be replaced with real content",
+    "tags": ["portrait", "featured"],
+    "year": 2025
+  },
+  {
+    "filename": "placeholder-landscape.jpg",
+    "title": "Placeholder Landscape",
+    "alt": "A placeholder landscape photograph to be replaced with real content",
+    "tags": ["landscape"],
+    "year": 2025
+  },
+  {
+    "filename": "placeholder-street.jpg",
+    "title": "Placeholder Street",
+    "alt": "A placeholder street photograph to be replaced with real content",
+    "tags": ["street", "featured"],
+    "year": 2024
+  }
+]

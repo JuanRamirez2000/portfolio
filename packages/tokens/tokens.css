@@ -1,0 +1,32 @@
+/* Design tokens — values to be filled in via design docs */
+
+:root {
+  /* Colors */
+  --bg: oklch(0.985 0.006 95);
+  --surface: oklch(1 0 0);
+  --surface-2: oklch(0.945 0.009 95);
+  --line: oklch(0.88 0.012 95);
+  --ink: oklch(0.28 0.013 95);
+  --ink-soft: oklch(0.52 0.012 95);
+  --peach: oklch(0.86 0.066 55);
+  --peach-deep: oklch(0.72 0.10 50);
+  --sage: oklch(0.86 0.055 150);
+  --sage-deep: oklch(0.62 0.085 150);
+  --warn-bg: oklch(0.92 0.05 25);
+  --warn-text: oklch(0.45 0.11 25);
+
+  /* Elevation */
+  --shadow: 0 10px 30px -14px oklch(0.4 0.03 60 / 0.28);
+  --shadow-raised: 0 18px 38px -16px oklch(0.4 0.03 60 / 0.4);
+
+  /* Shape scale */
+  --r-sm: 14px;
+  --r: 20px;
+  --r-lg: 28px;
+  --r-xl: 40px;
+
+  /* Typography */
+  --font-sans: "DM Sans", system-ui, sans-serif;
+  --font-display: "Fredoka", system-ui, sans-serif;
+  --font-mono: "DM Mono", ui-monospace, monospace;
+}

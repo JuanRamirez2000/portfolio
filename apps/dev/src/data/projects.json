@@ -1,0 +1,29 @@
+[
+  {
+    "title": "Portfolio Monorepo",
+    "description": "Turborepo + Astro monorepo hosting three personal portfolio sites.",
+    "url": "https://github.com/juanramirez/portfolio",
+    "tags": ["Astro", "Turborepo", "TypeScript"],
+    "status": "in-progress",
+    "year": 2025,
+    "featured": true
+  },
+  {
+    "title": "Placeholder Project Two",
+    "description": "A placeholder entry to be replaced with a real project.",
+    "url": "https://github.com/juanramirez/placeholder-two",
+    "tags": ["Next.js", "Supabase"],
+    "status": "live",
+    "year": 2024,
+    "featured": true
+  },
+  {
+    "title": "Placeholder Project Three",
+    "description": "A placeholder entry to be replaced with a real project.",
+    "url": "https://github.com/juanramirez/placeholder-three",
+    "tags": ["React", "Node.js"],
+    "status": "archived",
+    "year": 2023,
+    "featured": false
+  }
+]

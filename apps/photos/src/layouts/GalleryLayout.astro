@@ -1,0 +1,63 @@
+---
+import Base from './Base.astro';
+import Nav from '../components/Nav.astro';
+
+interface Props {
+  title: string;
+  galleryName: string;
+  tagline: string;
+  heroLabel?: string;
+  photos: Array<{ ratio: 'tall' | 'wide' | 'sq' }>;
+}
+
+const { title, galleryName, tagline, heroLabel = 'hero image', photos } = Astro.props;
+
+const ratioClass: Record<string, string> = {
+  tall: 'aspect-[3/4]',
+  wide: 'aspect-[4/3]',
+  sq:   'aspect-square',
+};
+---
+
+<Base title={title}>
+  <div class="bg-bg font-sans text-ink antialiased">
+    <Nav />
+
+    <!-- HERO -->
+    <header class="relative h-screen min-h-[600px] grid place-items-center overflow-hidden">
+      <div class="absolute inset-0 ph border-0 rounded-none" style="background:repeating-linear-gradient(45deg,oklch(0.42 0.012 250) 0 16px,oklch(0.38 0.012 250) 16px 32px)">
+        <span class="tag" style="background:oklch(0 0 0/0.35);color:oklch(1 0 0/0.9);border-color:oklch(1 0 0/0.25)">{heroLabel}</span>
+      </div>
+      <div class="absolute inset-0 bg-[linear-gradient(180deg,oklch(0_0_0/0.35)_0%,oklch(0_0_0/0.05)_35%,oklch(0_0_0/0.45)_100%)]" aria-hidden="true"></div>
+      <div class="relative text-center text-white px-6 z-10">
+        <div class="font-mono text-[13px] tracking-[0.18em] uppercase opacity-85 mb-4.5">GALLERY</div>
+        <h1 class="font-display font-medium text-[clamp(44px,7vw,84px)] leading-none tracking-[-0.01em] [text-shadow:0_2px_20px_oklch(0_0_0/0.4)]">{galleryName}</h1>
+        <p class="text-[17px] mt-5 opacity-[0.92]">{tagline}</p>
+      </div>
+      <div class="absolute bottom-7.5 left-1/2 -translate-x-1/2 z-10 text-white/85 font-mono text-[11px] tracking-[0.1em] flex flex-col items-center gap-2" aria-hidden="true">
+        <span>PHOTOS</span>
+        <span class="w-px h-8.5 bg-white/60"></span>
+      </div>
+    </header>
+
+    <!-- GALLERY GRID -->
+    <section class="py-20 pb-24 w-full max-w-[1180px] mx-auto px-8">
+      <slot name="before-grid" />
+      <div class="columns-1 sm:columns-2 lg:columns-3 gap-4.5">
+        {photos.map((photo) => (
+          <div class:list={['break-inside-avoid mb-4.5 rounded-[20px] overflow-hidden ph', ratioClass[photo.ratio]]}>
+            <span class="tag">photo · {photo.ratio}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-line">
+      <div class="w-full max-w-[1180px] mx-auto px-8 py-11 flex items-center justify-between flex-wrap gap-3.5 font-mono text-[12.5px] text-ink-soft">
+        <span class="font-display font-semibold text-[18px] text-ink">juanr.photo</span>
+        <span>© Juan R. — all the good light reserved</span>
+      </div>
+    </footer>
+  </div>
+</Base>

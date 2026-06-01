@@ -1,0 +1,62 @@
+---
+import galleries from '../data/galleries.json';
+---
+
+<nav class="absolute top-0 left-0 right-0 z-40">
+  <div class="w-full max-w-[1180px] mx-auto px-8 flex items-center justify-between h-19.5 text-white">
+    <a href="/" class="font-display font-semibold text-[21px] tracking-[0.01em] [text-shadow:0_1px_8px_oklch(0_0_0/0.35)] no-underline text-white">juanr.photo</a>
+
+    <div class="flex items-center gap-1">
+
+      <!-- Galleries dropdown -->
+      <div class="relative group" id="galleriesWrap">
+        <button
+          id="galleriesBtn"
+          class="text-[14.5px] text-white/92 no-underline px-4 py-2.25 rounded-full cursor-pointer transition-colors duration-150 bg-transparent border-none font-sans [text-shadow:0_1px_8px_oklch(0_0_0/0.35)] flex items-center gap-1.5 hover:bg-white/16"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          Galleries <span class="caret text-[10px] opacity-80 transition-transform duration-200 group-data-[open]:rotate-180" aria-hidden="true">▼</span>
+        </button>
+
+        <div
+          class="absolute top-[calc(100%+8px)] right-0 min-w-[248px] bg-surface border border-line rounded-[20px] shadow-[0_20px_44px_-16px_oklch(0_0_0/0.35)] p-2 opacity-0 invisible -translate-y-1.5 transition-[opacity,visibility,transform] duration-[180ms] group-data-[open]:opacity-100 group-data-[open]:visible group-data-[open]:translate-y-0"
+          role="menu"
+        >
+          {galleries.map((gallery) => (
+            <a
+              href={`/galleries/${gallery.slug}`}
+              role="menuitem"
+              class="flex items-center justify-between gap-2.5 no-underline text-ink text-[14.5px] px-3.25 py-2.75 rounded-xl transition-colors duration-[120ms] hover:bg-surface-2 [text-shadow:none]"
+            >
+              <span>{gallery.name}</span>
+              <span class="flex items-center gap-1.5">
+                {gallery.ageGated
+                  ? <span class="font-mono text-[10px] font-medium text-warn-text bg-warn-bg border border-[oklch(0.84_0.07_25)] rounded-full px-1.75 py-0.5">18+</span>
+                  : <span class="font-mono text-[11px] text-ink-soft">{gallery.count} photos</span>
+                }
+              </span>
+            </a>
+          ))}
+          <p class="font-mono text-[10.5px] text-ink-soft px-3.25 pt-1.5 pb-1 leading-[1.4]">// Boudoir gallery shows an age-gate disclaimer before entry</p>
+        </div>
+      </div>
+
+      <a href="mailto:juanpram2000@gmail.com" class="hidden sm:inline-flex text-[14.5px] text-white/92 px-4 py-2.25 rounded-full transition-colors duration-150 [text-shadow:0_1px_8px_oklch(0_0_0/0.35)] hover:bg-white/16 no-underline">Message me</a>
+      <a href="https://juanr.links" class="text-[14.5px] text-white/92 px-4 py-2.25 rounded-full transition-colors duration-150 [text-shadow:0_1px_8px_oklch(0_0_0/0.35)] hover:bg-white/16 no-underline">Links</a>
+    </div>
+  </div>
+</nav>
+
+<script>
+  const wrap = document.getElementById('galleriesWrap')!;
+  const btn  = document.getElementById('galleriesBtn')!;
+
+  function open()  { wrap.dataset.open = '';  btn.setAttribute('aria-expanded', 'true');  }
+  function close() { delete wrap.dataset.open; btn.setAttribute('aria-expanded', 'false'); }
+
+  btn.addEventListener('click', (e) => { e.stopPropagation(); 'open' in wrap.dataset ? close() : open(); });
+  wrap.addEventListener('mouseenter', open);
+  wrap.addEventListener('mouseleave', close);
+  document.addEventListener('click', close);
+</script>

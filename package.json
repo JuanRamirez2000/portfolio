@@ -1,0 +1,18 @@
+{
+  "name": "portfolio",
+  "version": "0.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "preview": "turbo preview"
+  },
+  "packageManager": "npm@11.12.1",
+  "devDependencies": {
+    "turbo": "^2.0.0"
+  }
+}

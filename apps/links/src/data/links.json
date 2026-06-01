@@ -1,0 +1,37 @@
+[
+  {
+    "label": "YouTube",
+    "sublabel": "videos and stuff",
+    "href": "https://youtube.com",
+    "kind": "social",
+    "platform": "youtube"
+  },
+  {
+    "label": "GitHub",
+    "sublabel": "where the code lives",
+    "href": "https://github.com/juanramirez",
+    "kind": "social",
+    "platform": "github"
+  },
+  {
+    "label": "Instagram",
+    "sublabel": "@juanr",
+    "href": "https://instagram.com",
+    "kind": "social",
+    "platform": "instagram"
+  },
+  {
+    "label": "Coding Portfolio",
+    "sublabel": "juanr.dev",
+    "href": "https://juanr.dev",
+    "kind": "social",
+    "platform": "dev"
+  },
+  {
+    "label": "Photography",
+    "sublabel": "juanr.photos",
+    "href": "https://juanr.photos",
+    "kind": "social",
+    "platform": "camera"
+  }
+]
