@@ -17,7 +17,7 @@ import workExperience from '../data/work_experience.json';
         <div class="flex gap-1.5 items-center">
           <a href="#timeline" class="hidden sm:block no-underline text-[14px] text-ink-soft px-3.5 py-2 rounded-full transition-colors duration-150 hover:bg-surface-2 hover:text-ink">Timeline</a>
           <a href="#projects"  class="hidden sm:block no-underline text-[14px] text-ink-soft px-3.5 py-2 rounded-full transition-colors duration-150 hover:bg-surface-2 hover:text-ink">Projects</a>
-          <a href="#about"     class="hidden sm:block no-underline text-[14px] text-ink-soft px-3.5 py-2 rounded-full transition-colors duration-150 hover:bg-surface-2 hover:text-ink">About</a>
+          <a href="#"          class="hidden sm:block no-underline text-[14px] text-ink-soft px-3.5 py-2 rounded-full transition-colors duration-150 hover:bg-surface-2 hover:text-ink">Resume</a>
           <a href="mailto:juanpram2000@gmail.com" class="no-underline inline-flex items-center font-medium text-[14px] bg-ink text-bg rounded-full px-5 py-2.5 transition-opacity duration-150 hover:opacity-85">Say hi</a>
         </div>
       </div>
@@ -27,12 +27,12 @@ import workExperience from '../data/work_experience.json';
     <header class="w-full max-w-260 mx-auto px-7">
       <div class="grid grid-cols-1 md:grid-cols-[1.3fr_0.9fr] gap-10 items-center py-12 md:py-18.5 md:pb-16">
         <div>
-          <div class="font-mono text-[13px] text-sage-deep tracking-[0.04em] mb-4.5">// hello world, again</div>
+          <div class="font-mono text-[13px] text-sage-deep tracking-[0.04em] mb-4.5">// Hello World!</div>
           <h1 class="font-display font-semibold text-[clamp(38px,5vw,58px)] leading-[1.04] tracking-[-0.02em]">
-            I build <span class="bg-[linear-gradient(120deg,var(--color-peach),var(--color-sage))] rounded-lg px-[0.12em]">slightly chaotic</span> software that mostly works.
+            I sometimes <span class="bg-[linear-gradient(120deg,var(--color-peach),var(--color-sage))] rounded-lg px-[0.12em]"> build cool things</span> that slightly work.
           </h1>
           <p class="text-[17px] leading-[1.6] text-ink-soft mt-5.5 mb-7.5 max-w-[42ch]">
-            Developer, tinkerer, and professional rubber-duck-talker. I turn caffeine into commits and the occasional working product.
+            Data analyst by trade, developer by habit. I also like to talk to rubber ducks
           </p>
           <div class="flex gap-3 flex-wrap">
             <a href="#projects" class="no-underline inline-flex items-center font-medium text-[14px] bg-ink text-bg rounded-full px-5 py-2.5 transition-opacity duration-150 hover:opacity-85">See my projects</a>
@@ -49,9 +49,9 @@ import workExperience from '../data/work_experience.json';
     <section class="py-14 w-full max-w-260 mx-auto px-7" id="timeline">
       <div class="flex items-end justify-between gap-5 mb-9.5">
         <div>
-          <span class="font-mono text-[12.5px] text-ink-soft block">// the story so far</span>
+          <span class="font-mono text-[12.5px] text-ink-soft block">// Where I have Been</span>
           <h2 class="font-display font-semibold text-[30px] tracking-[-0.01em]">Career timeline</h2>
-          <p class="text-[14px] text-ink-soft mt-1.5">Where I've been pretending to know what I'm doing.</p>
+          <p class="text-[14px] text-ink-soft mt-1.5">An Exhaustive Search.</p>
         </div>
       </div>
 
@@ -61,7 +61,7 @@ import workExperience from '../data/work_experience.json';
         <div class="absolute left-2.25 top-1.5 bottom-7.5 w-0.5 bg-line"></div>
 
         {workExperience.map((role, i) => (
-          <div class:list={['relative pb-8.5', i === workExperience.length - 1 && 'timeline-end']}>
+          <div class:list={['relative', i === workExperience.length - 1 ? 'pb-0' : 'pb-8.5']}>
             <!-- Node dot -->
             <span class:list={[
               'absolute -left-6.25 top-1.25 w-3.5 h-3.5 rounded-full border-[3px] border-sage-deep',
@@ -70,10 +70,10 @@ import workExperience from '../data/work_experience.json';
                 : 'bg-surface'
             ]}></span>
 
-            <div class="flex items-baseline gap-3 flex-wrap">
+            <div class="flex items-baseline gap-x-3 gap-y-0.5 flex-wrap">
               <span class="font-display font-medium text-[19px]">{role.title}</span>
               <span class="text-[15px] text-sage-deep font-medium">@ {role.company}</span>
-              <span class="font-mono text-[12.5px] text-ink-soft ml-auto">{role.start} — {role.end}</span>
+              <span class="font-mono text-[12.5px] text-bark-deep sm:ml-auto w-full sm:w-auto">{role.start} — {role.end}</span>
             </div>
             <p class="text-[14.5px] text-ink-soft leading-[1.55] mt-2 max-w-[62ch]">{role.description}</p>
             <div class="flex gap-1.75 flex-wrap mt-3">
@@ -83,14 +83,6 @@ import workExperience from '../data/work_experience.json';
             </div>
           </div>
         ))}
-
-        <!-- Add placeholder -->
-        <div class="relative">
-          <span class="absolute -left-6.25 top-0.75 w-3.5 h-3.5 rounded-full bg-surface border-2 border-dashed border-line"></span>
-          <button disabled class="inline-flex items-center gap-2 font-mono text-[13px] text-ink-soft border-[1.5px] border-dashed border-line bg-transparent px-4 py-2.25 rounded-full opacity-75 cursor-default">
-            + update with your real experience
-          </button>
-        </div>
       </div>
     </section>
 
@@ -98,9 +90,9 @@ import workExperience from '../data/work_experience.json';
     <section class="py-14 w-full max-w-260 mx-auto px-7" id="projects">
       <div class="flex items-end justify-between gap-5 mb-9.5">
         <div>
-          <span class="font-mono text-[12.5px] text-ink-soft block">// things i made on purpose</span>
+          <span class="font-mono text-[12.5px] text-bark-deep block">// What I Do When I Have Free Time</span>
           <h2 class="font-display font-semibold text-[30px] tracking-[-0.01em]">Projects</h2>
-          <p class="text-[14px] text-ink-soft mt-1.5">A grid of stuff I'm proud of (and a few I'm not).</p>
+          <p class="text-[14px] text-ink-soft mt-1.5">What I Am Actually Proud Of</p>
         </div>
         <span class="font-mono text-[12.5px] text-ink-soft shrink-0">{projects.length} of many</span>
       </div>
@@ -132,6 +124,7 @@ import workExperience from '../data/work_experience.json';
       </div>
     </section>
 
+
     <!-- FOOTER -->
     <footer class="border-t border-line mt-7.5">
       <div class="w-full max-w-260 mx-auto px-7 py-10 flex items-center justify-between flex-wrap gap-4">
@@ -139,7 +132,7 @@ import workExperience from '../data/work_experience.json';
           <span class="w-2.75 h-2.75 rounded-full bg-sage-deep inline-block shrink-0"></span>
           juanr.dev
         </div>
-        <span class="font-mono text-[12.5px] text-ink-soft">made with too much coffee · juanr.dev</span>
+        <span class="font-mono text-[12.5px] text-ink-soft">made while being confused · juanr.dev</span>
       </div>
     </footer>
 

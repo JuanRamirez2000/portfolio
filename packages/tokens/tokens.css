@@ -8,16 +8,18 @@
   --line: oklch(0.88 0.012 95);
   --ink: oklch(0.28 0.013 95);
   --ink-soft: oklch(0.52 0.012 95);
-  --peach: oklch(0.86 0.066 55);
-  --peach-deep: oklch(0.72 0.10 50);
+  --peach: oklch(0.85 0.07 45);
+  --peach-deep: oklch(0.62 0.11 42);
   --sage: oklch(0.86 0.055 150);
   --sage-deep: oklch(0.62 0.085 150);
+  --bark: oklch(0.84 0.055 65);
+  --bark-deep: oklch(0.50 0.09 58);
   --warn-bg: oklch(0.92 0.05 25);
   --warn-text: oklch(0.45 0.11 25);
 
   /* Elevation */
-  --shadow: 0 10px 30px -14px oklch(0.4 0.03 60 / 0.28);
-  --shadow-raised: 0 18px 38px -16px oklch(0.4 0.03 60 / 0.4);
+  --shadow: 0 10px 30px -14px oklch(0.38 0.05 55 / 0.28);
+  --shadow-raised: 0 18px 38px -16px oklch(0.38 0.05 55 / 0.42);
 
   /* Shape scale */
   --r-sm: 14px;

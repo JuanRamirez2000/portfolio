@@ -1,29 +1,29 @@
 [
   {
     "title": "Portfolio Monorepo",
-    "description": "Turborepo + Astro monorepo hosting three personal portfolio sites.",
-    "url": "https://github.com/juanramirez/portfolio",
-    "tags": ["Astro", "Turborepo", "TypeScript"],
+    "description": "Turborepo + Astro monorepo hosting three personal portfolio sites with a shared design token package. The site you're looking at right now.",
+    "url": "https://github.com/JuanRamirez2000/portfolio",
+    "tags": ["Astro", "Turborepo", "TypeScript", "TailwindCSS"],
     "status": "in-progress",
     "year": 2025,
     "featured": true
   },
   {
-    "title": "Placeholder Project Two",
-    "description": "A placeholder entry to be replaced with a real project.",
-    "url": "https://github.com/juanramirez/placeholder-two",
-    "tags": ["Next.js", "Supabase"],
-    "status": "live",
-    "year": 2024,
+    "title": "More coming soon",
+    "description": "A placeholder entry to be replaced with a real project. Good things take time.",
+    "url": "",
+    "tags": ["TBD"],
+    "status": "coming-soon",
+    "year": 2025,
     "featured": true
   },
   {
-    "title": "Placeholder Project Three",
-    "description": "A placeholder entry to be replaced with a real project.",
-    "url": "https://github.com/juanramirez/placeholder-three",
-    "tags": ["React", "Node.js"],
-    "status": "archived",
-    "year": 2023,
+    "title": "And more after that",
+    "description": "Another placeholder entry. The backlog is long, the weekends are short.",
+    "url": "",
+    "tags": ["TBD"],
+    "status": "coming-soon",
+    "year": 2024,
     "featured": false
   }
 ]

@@ -1,47 +1,80 @@
 [
   {
-    "title": "Senior Software Engineer",
-    "company": "Placeholder Labs",
-    "start": "2024",
+    "title": "Senior Data Analyst",
+    "company": "Coast Community Colleges",
+    "start": "Mar 2025",
     "end": "now",
-    "description": "Leading a small team building things users mostly enjoy. Short, punchy line about impact goes right here.",
-    "tags": ["TypeScript", "React", "Leadership"],
+    "description": "Architecting automated BI dashboards and ETL pipelines that turn chaotic student demographic data into something executive leadership can actually act on. Doing Propensity Score Matching to evaluate program outcomes and serving as data advisor to the DEIA committee.",
+    "tags": [
+      "Python",
+      "Pandas",
+      "SQL",
+      "GeoPandas",
+      "ArcGIS",
+      "Jupyter",
+      "Statistics"
+    ],
     "current": true
   },
   {
-    "title": "Software Engineer",
-    "company": "Some Startup",
-    "start": "2022",
-    "end": "2024",
-    "description": "Shipped features fast, broke prod twice, learned a lot. One sentence of bragging fits comfortably on this line.",
-    "tags": ["Node", "Postgres"],
+    "title": "Data Analyst",
+    "company": "Coast Community Colleges",
+    "start": "Apr 2024",
+    "end": "Mar 2025",
+    "description": "Started here digging into student retention datasets with SQL and Python. Built ETL pipelines that took hours of manual work down to minutes and surfaced insights that contributed to a 200% improvement in retention rates.",
+    "tags": ["Python", "Pandas", "SQL", "Matplotlib"],
     "current": false
   },
   {
-    "title": "Junior Developer",
-    "company": "First Real Job Co.",
-    "start": "2020",
-    "end": "2022",
-    "description": "Where it all began. Placeholder description of early-career heroics and questionable git history.",
-    "tags": ["Python", "Django"],
+    "title": "Lead Frontend Web Developer",
+    "company": "TeammateMe",
+    "start": "Oct 2023",
+    "end": "Apr 2024",
+    "description": "Led a frontend team working on a Next.js/React app, set up TypeScript standards and CI/CD pipelines, and integrated Mixpanel + Google Analytics for data-driven A/B testing. Boosted conversion rates by 15% and cut technical debt by 30% by modernizing a legacy codebase. Also fixed more bugs than I'd like to admit.",
+    "tags": [
+      "React",
+      "TypeScript",
+      "Next.js",
+      "TailwindCSS",
+      "AuthJS",
+      "PostgreSQL",
+      "Digital Ocean"
+    ],
     "current": false
   },
   {
-    "title": "Freelance / Side Quests",
-    "company": "My Bedroom",
+    "title": "Full Stack Engineer",
+    "company": "Relion",
+    "start": "Jan 2023",
+    "end": "Oct 2023",
+    "description": "Built a custom helpdesk dashboard connecting multiple third-party APIs through a Prisma/Postgres backend. Designed a smart-search feature with tag-based filtering that made digging through old tickets actually bearable. The 'find similar tickets' feature was the most useful thing I shipped that year. Allowing helpdesk to go through the mess of IT and understanding problems with limited context",
+    "tags": [
+      "React",
+      "TypeScript",
+      "Next.js",
+      "Prisma",
+      "PostgreSQL",
+      "AuthJS",
+      "Vercel"
+    ],
+    "current": false
+  },
+  {
+    "title": "Research Student",
+    "company": "Cal State Fullerton",
+    "start": "Jan 2021",
+    "end": "Sep 2022",
+    "description": "Designed evolutionary algorithms for optimizing wildfire sensor node placement across Southern California terrain — accounting for topography, sensor range, and coverage overlap. Co-presented at SCCUR and was the main author at NCUR",
+    "tags": ["Python", "MATLAB", "ArcGIS", "Open Street Maps", "Algorithms"],
+    "current": false
+  },
+  {
+    "title": "B.S. Computer Science",
+    "company": "Cal State Fullerton",
     "start": "2018",
-    "end": "2020",
-    "description": "Built websites for friends, family, and that one guy who never paid. Character development.",
-    "tags": ["HTML", "CSS", "Hustle"],
-    "current": false
-  },
-  {
-    "title": "Computer Science, B.S.",
-    "company": "A University",
-    "start": "2014",
-    "end": "2018",
-    "description": "Learned the theory, forgot the theory, relearned it via Stack Overflow.",
-    "tags": ["Algorithms", "Coffee"],
+    "end": "Jul 2022",
+    "description": "Learned data structures, algorithms, and how to survive compilers and OS. Honestly still don't know how I did it. Graduated with a research background in GIS and evolutionary computation. The theory from class actually showed up in the wildfire research, which was a nice surprise.",
+    "tags": ["Computer Science", "Algorithms", "Research"],
     "current": false
   }
 ]

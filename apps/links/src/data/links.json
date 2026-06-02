@@ -1,26 +1,5 @@
 [
   {
-    "label": "YouTube",
-    "sublabel": "videos and stuff",
-    "href": "https://youtube.com",
-    "kind": "social",
-    "platform": "youtube"
-  },
-  {
-    "label": "GitHub",
-    "sublabel": "where the code lives",
-    "href": "https://github.com/juanramirez",
-    "kind": "social",
-    "platform": "github"
-  },
-  {
-    "label": "Instagram",
-    "sublabel": "@juanr",
-    "href": "https://instagram.com",
-    "kind": "social",
-    "platform": "instagram"
-  },
-  {
     "label": "Coding Portfolio",
     "sublabel": "juanr.dev",
     "href": "https://juanr.dev",
@@ -29,9 +8,37 @@
   },
   {
     "label": "Photography",
-    "sublabel": "juanr.photos",
+    "sublabel": "my pics",
     "href": "https://juanr.photos",
     "kind": "social",
     "platform": "camera"
+  },
+  {
+    "label": "Photography Instagram",
+    "sublabel": "@juanr.photos",
+    "href": "https://instagram.com/yourhandle",
+    "kind": "social",
+    "platform": "instagram"
+  },
+  {
+    "label": "GitHub",
+    "sublabel": "JuanRamirez2000",
+    "href": "https://github.com/JuanRamirez2000",
+    "kind": "social",
+    "platform": "github"
+  },
+  {
+    "label": "LinkedIn",
+    "sublabel": "juanramirez2000",
+    "href": "https://linkedin.com/in/juanramirez2000/",
+    "kind": "social",
+    "platform": "linkedin"
+  },
+  {
+    "label": "Email",
+    "sublabel": "juanpram2000@gmail.com",
+    "href": "mailto:juanpram2000@gmail.com",
+    "kind": "social",
+    "platform": "email"
   }
 ]
