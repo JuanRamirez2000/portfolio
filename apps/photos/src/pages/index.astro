@@ -1,6 +1,7 @@
 ---
 import Base from "../layouts/Base.astro";
 import Nav from "../components/Nav.astro";
+import Lightbox from "../components/Lightbox.astro";
 import { getFeaturedPhotos, getHero } from "../lib/api";
 import { cfImageUrl, cfImageSrcset, cfHeroSrcset } from "../lib/cf-images";
 
@@ -86,7 +87,11 @@ const [featuredPhotos, heroPhotoId] = await Promise.all([
                   alt={photo.alt}
                   loading="lazy"
                   decoding="async"
-                  class="w-full h-auto block"
+                  class="w-full h-auto block cursor-pointer"
+                  data-lightbox
+                  data-lb-src={cfImageUrl(photo.id, "gallery")}
+                  data-lb-alt={photo.alt}
+                  data-lb-id={photo.id}
                 />
               </div>
             ))}
@@ -98,6 +103,8 @@ const [featuredPhotos, heroPhotoId] = await Promise.all([
         )
       }
     </section>
+
+    <Lightbox />
 
     <!-- FOOTER -->
     <footer class="border-t border-line">

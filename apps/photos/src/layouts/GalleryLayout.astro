@@ -1,6 +1,7 @@
 ---
 import Base from './Base.astro';
 import Nav from '../components/Nav.astro';
+import Lightbox from '../components/Lightbox.astro';
 import { cfImageUrl, cfImageSrcset, cfHeroSrcset } from '../lib/cf-images';
 import type { Photo, Ratio } from '../lib/cf-images';
 
@@ -72,7 +73,11 @@ const ratioDims: Record<Ratio, { width: number; height: number }> = {
                 height={ratioDims[photo.ratio].height}
                 loading="lazy"
                 decoding="async"
-                class="w-full block"
+                class="w-full block cursor-pointer"
+                data-lightbox
+                data-lb-src={cfImageUrl(photo.id, 'gallery')}
+                data-lb-alt={photo.alt}
+                data-lb-id={photo.id}
               />
             </div>
           ))}
@@ -81,6 +86,8 @@ const ratioDims: Record<Ratio, { width: number; height: number }> = {
         <p class="text-center text-ink-soft font-mono text-[13px] py-20">// coming soon</p>
       )}
     </section>
+
+    <Lightbox />
 
     <!-- FOOTER -->
     <footer class="border-t border-line">

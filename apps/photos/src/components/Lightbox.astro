@@ -1,0 +1,114 @@
+---
+// Lightbox: opens on any [data-lightbox] image click.
+// Attrs needed on each <img>: data-lightbox data-lb-src data-lb-alt data-lb-id
+---
+
+<div
+  id="lightbox"
+  class="fixed inset-0 z-[200] flex items-center justify-center hidden"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Photo viewer"
+>
+  <div id="lb-backdrop" class="absolute inset-0 bg-black/90 cursor-pointer"></div>
+
+  <img
+    id="lb-img"
+    src=""
+    alt=""
+    class="relative z-10 max-w-[92vw] max-h-[90vh] object-contain rounded-2xl shadow-[0_32px_80px_-12px_oklch(0_0_0/0.7)]"
+  />
+
+  <!-- Controls -->
+  <div class="absolute top-5 right-5 z-20 flex gap-2">
+    <button
+      id="lb-copy"
+      title="Copy link to photo"
+      class="flex items-center gap-1.5 bg-white/12 hover:bg-white/22 border border-white/20 text-white/90 text-[12.5px] font-mono px-3.5 py-2 rounded-full transition-colors duration-150 backdrop-blur-sm"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+      </svg>
+      copy link
+    </button>
+    <button
+      id="lb-close"
+      aria-label="Close photo viewer"
+      class="flex items-center justify-center w-9 h-9 bg-white/12 hover:bg-white/22 border border-white/20 text-white/90 rounded-full transition-colors duration-150 backdrop-blur-sm"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Toast -->
+  <div
+    id="lb-toast"
+    class="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 bg-surface border border-line text-ink text-[12.5px] font-mono px-4 py-2.5 rounded-full shadow-lg hidden pointer-events-none"
+  >
+    link copied ✓
+  </div>
+</div>
+
+<script>
+  const lb      = document.getElementById('lightbox')!;
+  const lbImg   = document.getElementById('lb-img') as HTMLImageElement;
+  const backdrop = document.getElementById('lb-backdrop')!;
+  const closeBtn = document.getElementById('lb-close')!;
+  const copyBtn  = document.getElementById('lb-copy')!;
+  const toast    = document.getElementById('lb-toast')!;
+
+  function open(src: string, alt: string, id: string) {
+    lbImg.src = src;
+    lbImg.alt = alt;
+    lb.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    history.replaceState(null, '', `#photo-${id}`);
+  }
+
+  function close() {
+    lb.classList.add('hidden');
+    lbImg.src = '';
+    document.body.style.overflow = '';
+    history.replaceState(null, '', location.pathname + location.search);
+  }
+
+  // Event delegation — works for any [data-lightbox] on the page
+  document.addEventListener('click', (e) => {
+    const el = (e.target as Element).closest('[data-lightbox]');
+    if (!el) return;
+    open(
+      el.getAttribute('data-lb-src') ?? '',
+      el.getAttribute('data-lb-alt') ?? '',
+      el.getAttribute('data-lb-id') ?? '',
+    );
+  });
+
+  backdrop.addEventListener('click', close);
+  closeBtn.addEventListener('click', close);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !lb.classList.contains('hidden')) close();
+  });
+
+  copyBtn.addEventListener('click', async () => {
+    await navigator.clipboard.writeText(location.href);
+    toast.classList.remove('hidden');
+    setTimeout(() => toast.classList.add('hidden'), 2000);
+  });
+
+  // Auto-open if URL already has a #photo-<id> hash
+  const hash = location.hash;
+  if (hash.startsWith('#photo-')) {
+    const id = hash.slice(7);
+    const el = document.querySelector(`[data-lb-id="${id}"]`);
+    if (el) open(
+      el.getAttribute('data-lb-src') ?? '',
+      el.getAttribute('data-lb-alt') ?? '',
+      id,
+    );
+  }
+</script>
