@@ -31,8 +31,11 @@ jobs:
         env:
           PUBLIC_CF_IMAGES_ACCOUNT_HASH: ${{ secrets.PUBLIC_CF_IMAGES_ACCOUNT_HASH }}
 
-      - name: Deploy to Cloudflare
-        run: npx wrangler deploy --config apps/photos/wrangler.jsonc
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: portfolio-photos
+          directory: apps/photos/dist
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
