@@ -3,17 +3,15 @@ import Base from '../../layouts/Base.astro';
 import Nav from '../../components/Nav.astro';
 import AgeGate from '../../components/AgeGate.astro';
 import { cfImageUrl, cfImageSrcset } from '../../lib/cf-images';
-import photosData from '../../data/photos.json';
-import type { Photo, Ratio } from '../../lib/cf-images';
+import { getPhotos } from '../../lib/api';
+import type { Ratio } from '../../lib/cf-images';
 
-const photos = (photosData as Photo[]).filter(
-  p => p.gallery.includes('boudoir') && !p.id.startsWith('REPLACE')
-);
+const photos = await getPhotos('boudoir');
 
 const ratioDims: Record<Ratio, { width: number; height: number }> = {
-  tall: { width: 400, height: 533 },
-  wide: { width: 400, height: 300 },
-  sq:   { width: 400, height: 400 },
+  tall:   { width: 400, height: 533 },
+  wide:   { width: 400, height: 300 },
+  square: { width: 400, height: 400 },
 };
 ---
 

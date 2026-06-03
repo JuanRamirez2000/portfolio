@@ -1,0 +1,32 @@
+name: Deploy photos worker
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/photos-worker/**'
+      - '.github/workflows/deploy-photos-worker.yml'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --workspace=apps/photos-worker
+
+      - name: Deploy Worker
+        run: npm run deploy --workspace=apps/photos-worker
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

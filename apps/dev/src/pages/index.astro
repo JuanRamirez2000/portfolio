@@ -1,45 +1,93 @@
 ---
-import Base from '../layouts/Base.astro';
-import projects from '../data/projects.json';
-import workExperience from '../data/work_experience.json';
+import Base from "../layouts/Base.astro";
+import projects from "../data/projects.json";
+import workExperience from "../data/work_experience.json";
 ---
 
 <Base title="juanr.dev — Juan Ramirez">
   <div class="bg-bg font-sans text-ink antialiased">
-
     <!-- NAV -->
-    <nav class="sticky top-0 z-40 bg-bg/80 backdrop-blur-md border-b border-line">
-      <div class="w-full max-w-260 mx-auto px-7 flex items-center justify-between h-16.5">
-        <div class="font-display font-semibold text-[20px] flex items-center gap-2 text-ink">
-          <span class="w-2.75 h-2.75 rounded-full bg-sage-deep inline-block shrink-0"></span>
+    <nav
+      class="sticky top-0 z-40 bg-bg/80 backdrop-blur-md border-b border-line"
+    >
+      <div
+        class="w-full max-w-260 mx-auto px-7 flex items-center justify-between h-16.5"
+      >
+        <div
+          class="font-display font-semibold text-[20px] flex items-center gap-2 text-ink"
+        >
+          <span
+            class="w-2.75 h-2.75 rounded-full bg-sage-deep inline-block shrink-0"
+          ></span>
           juanr.dev
         </div>
         <div class="flex gap-1.5 items-center">
-          <a href="#timeline" class="hidden sm:block no-underline text-[14px] text-ink-soft px-3.5 py-2 rounded-full transition-colors duration-150 hover:bg-surface-2 hover:text-ink">Timeline</a>
-          <a href="#projects"  class="hidden sm:block no-underline text-[14px] text-ink-soft px-3.5 py-2 rounded-full transition-colors duration-150 hover:bg-surface-2 hover:text-ink">Projects</a>
-          <a href="#"          class="hidden sm:block no-underline text-[14px] text-ink-soft px-3.5 py-2 rounded-full transition-colors duration-150 hover:bg-surface-2 hover:text-ink">Resume</a>
-          <a href="mailto:juanpram2000@gmail.com" class="no-underline inline-flex items-center font-medium text-[14px] bg-ink text-bg rounded-full px-5 py-2.5 transition-opacity duration-150 hover:opacity-85">Say hi</a>
+          <a
+            href="#timeline"
+            class="hidden sm:block no-underline text-[14px] text-ink-soft px-3.5 py-2 rounded-full transition-colors duration-150 hover:bg-surface-2 hover:text-ink"
+            >Timeline</a
+          >
+          <a
+            href="#projects"
+            class="hidden sm:block no-underline text-[14px] text-ink-soft px-3.5 py-2 rounded-full transition-colors duration-150 hover:bg-surface-2 hover:text-ink"
+            >Projects</a
+          >
+          <a
+            href="#"
+            class="hidden sm:block no-underline text-[14px] text-ink-soft px-3.5 py-2 rounded-full transition-colors duration-150 hover:bg-surface-2 hover:text-ink"
+            >Resume</a
+          >
+          <a
+            href="mailto:juanpram2000@gmail.com"
+            class="no-underline inline-flex items-center font-medium text-[14px] bg-ink text-bg rounded-full px-5 py-2.5 transition-opacity duration-150 hover:opacity-85"
+            >Say hi</a
+          >
         </div>
       </div>
     </nav>
 
     <!-- HERO -->
     <header class="w-full max-w-260 mx-auto px-7">
-      <div class="grid grid-cols-1 md:grid-cols-[1.3fr_0.9fr] gap-10 items-center py-12 md:py-18.5 md:pb-16">
+      <div
+        class="grid grid-cols-1 md:grid-cols-[1.3fr_0.9fr] gap-10 items-center py-12 md:py-18.5 md:pb-16"
+      >
         <div>
-          <div class="font-mono text-[13px] text-sage-deep tracking-[0.04em] mb-4.5">// Hello World!</div>
-          <h1 class="font-display font-semibold text-[clamp(38px,5vw,58px)] leading-[1.04] tracking-[-0.02em]">
-            I sometimes <span class="bg-[linear-gradient(120deg,var(--color-peach),var(--color-sage))] rounded-lg px-[0.12em]"> build cool things</span> that slightly work.
+          <div
+            class="font-mono text-[13px] text-sage-deep tracking-[0.04em] mb-4.5"
+          >
+            // Hello World!
+          </div>
+          <h1
+            class="font-display font-semibold text-[clamp(38px,5vw,58px)] leading-[1.04] tracking-[-0.02em]"
+          >
+            I sometimes <span
+              class="bg-[linear-gradient(120deg,var(--color-peach),var(--color-sage))] rounded-lg px-[0.12em]"
+            >
+              build cool things</span
+            > that slightly work.
           </h1>
-          <p class="text-[17px] leading-[1.6] text-ink-soft mt-5.5 mb-7.5 max-w-[42ch]">
-            Data analyst by trade, developer by habit. I also like to talk to rubber ducks
+          <p
+            class="text-[17px] leading-[1.6] text-ink-soft mt-5.5 mb-7.5 max-w-[42ch]"
+          >
+            Data analyst by trade, developer by habit. I also like to talk to
+            rubber ducks
           </p>
           <div class="flex gap-3 flex-wrap">
-            <a href="#projects" class="no-underline inline-flex items-center font-medium text-[14px] bg-ink text-bg rounded-full px-5 py-2.5 transition-opacity duration-150 hover:opacity-85">See my projects</a>
-            <a href="#" class="no-underline inline-flex items-center font-medium text-[14px] bg-surface-2 text-ink border border-line rounded-full px-5 py-2.5 transition-opacity duration-150 hover:opacity-85">Download résumé</a>
+            <a
+              href="#projects"
+              class="no-underline inline-flex items-center font-medium text-[14px] bg-ink text-bg rounded-full px-5 py-2.5 transition-opacity duration-150 hover:opacity-85"
+              >See my projects</a
+            >
+            <a
+              href="#"
+              class="no-underline inline-flex items-center font-medium text-[14px] bg-surface-2 text-ink border border-line rounded-full px-5 py-2.5 transition-opacity duration-150 hover:opacity-85"
+              >Download résumé</a
+            >
           </div>
         </div>
-        <div class="aspect-square rounded-[40px] ph md:order-0 order-first md:max-w-none max-w-80 mx-auto w-full">
+        <div
+          class="aspect-square rounded-[40px] ph md:order-0 order-first md:max-w-none max-w-80 mx-auto w-full"
+        >
           <span class="tag">portrait / avatar</span>
         </div>
       </div>
@@ -49,92 +97,145 @@ import workExperience from '../data/work_experience.json';
     <section class="py-14 w-full max-w-260 mx-auto px-7" id="timeline">
       <div class="flex items-end justify-between gap-5 mb-9.5">
         <div>
-          <span class="font-mono text-[12.5px] text-ink-soft block">// Where I have Been</span>
-          <h2 class="font-display font-semibold text-[30px] tracking-[-0.01em]">Career timeline</h2>
+          <span class="font-mono text-[12.5px] text-ink-soft block"
+            >// Where I have Been</span
+          >
+          <h2 class="font-display font-semibold text-[30px] tracking-[-0.01em]">
+            Career timeline
+          </h2>
           <p class="text-[14px] text-ink-soft mt-1.5">An Exhaustive Search.</p>
         </div>
       </div>
 
-      <!-- Rail -->
-      <div class="relative pl-8.5">
-        <!-- Vertical line -->
-        <div class="absolute left-2.25 top-1.5 bottom-7.5 w-0.5 bg-line"></div>
-
-        {workExperience.map((role, i) => (
-          <div class:list={['relative', i === workExperience.length - 1 ? 'pb-0' : 'pb-8.5']}>
-            <!-- Node dot -->
-            <span class:list={[
-              'absolute -left-6.25 top-1.25 w-3.5 h-3.5 rounded-full border-[3px] border-sage-deep',
-              role.current
-                ? 'bg-sage-deep shadow-[0_0_0_5px_oklch(0.62_0.085_150/0.18)]'
-                : 'bg-surface'
-            ]}></span>
-
-            <div class="flex items-baseline gap-x-3 gap-y-0.5 flex-wrap">
-              <span class="font-display font-medium text-[19px]">{role.title}</span>
-              <span class="text-[15px] text-sage-deep font-medium">@ {role.company}</span>
-              <span class="font-mono text-[12.5px] text-bark-deep sm:ml-auto w-full sm:w-auto">{role.start} — {role.end}</span>
-            </div>
-            <p class="text-[14.5px] text-ink-soft leading-[1.55] mt-2 max-w-[62ch]">{role.description}</p>
-            <div class="flex gap-1.75 flex-wrap mt-3">
-              {role.tags.map((tag) => (
-                <span class="font-mono text-[11.5px] text-ink-soft bg-surface-2 border border-line px-2.5 py-1 rounded-full">{tag}</span>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
+      <ul class="timeline timeline-vertical timeline-compact">
+        {
+          workExperience.map((role, i) => (
+            <li>
+              {i > 0 && <hr class="bg-line" />}
+              <div class="timeline-middle mx-2">
+                <span
+                  class:list={[
+                    "block w-3.5 h-3.5 rounded-full border-[3px] border-sage-deep",
+                    role.current
+                      ? "bg-sage-deep shadow-[0_0_0_5px_oklch(0.62_0.085_150/0.18)]"
+                      : "bg-surface",
+                  ]}
+                />
+              </div>
+              <div
+                class:list={[
+                  "timeline-end ms-4",
+                  i < workExperience.length - 1 ? "pb-10" : "",
+                ]}
+              >
+                <div class="flex items-baseline gap-x-3 gap-y-0.5 flex-wrap">
+                  <span class="font-display font-medium text-[19px]">
+                    {role.title}
+                  </span>
+                  <span class="text-[15px] text-sage-deep font-medium">
+                    @ {role.company}
+                  </span>
+                  <span class="font-mono text-[12.5px] text-bark-deep sm:ml-auto w-full sm:w-auto">
+                    {role.start} — {role.end}
+                  </span>
+                </div>
+                <p class="text-[14.5px] text-ink-soft leading-[1.55] mt-2 max-w-[62ch]">
+                  {role.description}
+                </p>
+                <div class="flex gap-1.75 flex-wrap mt-3">
+                  {role.tags.map((tag) => (
+                    <span class="font-mono text-[11.5px] text-ink-soft bg-surface-2 border border-line px-2.5 py-1 rounded-full">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              {i < workExperience.length - 1 && <hr class="bg-line" />}
+            </li>
+          ))
+        }
+      </ul>
     </section>
 
     <!-- PROJECTS -->
     <section class="py-14 w-full max-w-260 mx-auto px-7" id="projects">
       <div class="flex items-end justify-between gap-5 mb-9.5">
         <div>
-          <span class="font-mono text-[12.5px] text-bark-deep block">// What I Do When I Have Free Time</span>
-          <h2 class="font-display font-semibold text-[30px] tracking-[-0.01em]">Projects</h2>
-          <p class="text-[14px] text-ink-soft mt-1.5">What I Am Actually Proud Of</p>
+          <span class="font-mono text-[12.5px] text-bark-deep block"
+            >// What I Do When I Have Free Time</span
+          >
+          <h2 class="font-display font-semibold text-[30px] tracking-[-0.01em]">
+            Projects
+          </h2>
+          <p class="text-[14px] text-ink-soft mt-1.5">
+            What I Am Actually Proud Of
+          </p>
         </div>
-        <span class="font-mono text-[12.5px] text-ink-soft shrink-0">{projects.length} of many</span>
+        <span class="font-mono text-[12.5px] text-ink-soft shrink-0"
+          >{projects.length} of many</span
+        >
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-        {projects.map((project) => (
-          <article class="bg-surface border border-line rounded-[28px] overflow-hidden shadow-card flex flex-col transition-[transform,box-shadow] duration-150 ease-out hover:-translate-y-0.75 hover:shadow-raised">
-            <div class="aspect-16/11 border-b border-line ph">
-              <span class="tag">project shot</span>
-            </div>
-            <div class="p-4.5 flex flex-col gap-2.5 flex-1">
-              <h3 class="font-display font-medium text-[18px]">{project.title}</h3>
-              <p class="text-[13.5px] text-ink-soft leading-normal flex-1">{project.description}</p>
-              <div class="flex items-center justify-between gap-2.5">
-                <div class="flex gap-1.5 flex-wrap">
-                  {project.tags.map((tag) => (
-                    <span class="font-mono text-[11.5px] text-ink-soft bg-surface-2 border border-line px-2.5 py-1 rounded-full">{tag}</span>
-                  ))}
-                </div>
-                <div class="flex gap-1.5">
-                  {project.url && (
-                    <a href={project.url} class="w-7.5 h-7.5 rounded-[9px] grid place-items-center bg-surface-2 border border-line font-mono text-[10px] text-ink-soft no-underline transition-colors duration-150 hover:bg-line" target="_blank" rel="noopener noreferrer" title="Repository">GH</a>
-                  )}
+        {
+          projects.map((project) => (
+            <article class="bg-surface border border-line rounded-[28px] overflow-hidden shadow-card flex flex-col transition-[transform,box-shadow] duration-150 ease-out hover:-translate-y-0.75 hover:shadow-raised">
+              <div class="aspect-16/11 border-b border-line ph">
+                <span class="tag">project shot</span>
+              </div>
+              <div class="p-4.5 flex flex-col gap-2.5 flex-1">
+                <h3 class="font-display font-medium text-[18px]">
+                  {project.title}
+                </h3>
+                <p class="text-[13.5px] text-ink-soft leading-normal flex-1">
+                  {project.description}
+                </p>
+                <div class="flex items-center justify-between gap-2.5">
+                  <div class="flex gap-1.5 flex-wrap">
+                    {project.tags.map((tag) => (
+                      <span class="font-mono text-[11.5px] text-ink-soft bg-surface-2 border border-line px-2.5 py-1 rounded-full">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                  <div class="flex gap-1.5">
+                    {project.url && (
+                      <a
+                        href={project.url}
+                        class="w-7.5 h-7.5 rounded-[9px] grid place-items-center bg-surface-2 border border-line font-mono text-[10px] text-ink-soft no-underline transition-colors duration-150 hover:bg-line"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        title="Repository"
+                      >
+                        GH
+                      </a>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          </article>
-        ))}
+            </article>
+          ))
+        }
       </div>
     </section>
 
-
     <!-- FOOTER -->
     <footer class="border-t border-line mt-7.5">
-      <div class="w-full max-w-260 mx-auto px-7 py-10 flex items-center justify-between flex-wrap gap-4">
-        <div class="font-display font-semibold text-[20px] flex items-center gap-2 text-ink">
-          <span class="w-2.75 h-2.75 rounded-full bg-sage-deep inline-block shrink-0"></span>
+      <div
+        class="w-full max-w-260 mx-auto px-7 py-10 flex items-center justify-between flex-wrap gap-4"
+      >
+        <div
+          class="font-display font-semibold text-[20px] flex items-center gap-2 text-ink"
+        >
+          <span
+            class="w-2.75 h-2.75 rounded-full bg-sage-deep inline-block shrink-0"
+          ></span>
           juanr.dev
         </div>
-        <span class="font-mono text-[12.5px] text-ink-soft">made while being confused · juanr.dev</span>
+        <span class="font-mono text-[12.5px] text-ink-soft"
+          >made while being confused · juanr.dev</span
+        >
       </div>
     </footer>
-
   </div>
 </Base>

@@ -9,16 +9,18 @@
 
 const ACCOUNT_HASH = import.meta.env.PUBLIC_CF_IMAGES_ACCOUNT_HASH ?? '';
 
-export type Ratio = 'tall' | 'wide' | 'sq';
+export type Ratio = 'tall' | 'wide' | 'square';
 
 export interface Photo {
   id: string;
-  gallery: string[];
+  filename: string;
+  galleries: string[];
   ratio: Ratio;
   title: string;
   alt: string;
   year: number;
   featured: boolean;
+  uploaded_at: string;
 }
 
 export type CfVariant =

@@ -16,9 +16,9 @@ const { title, galleryName, tagline, heroLabel = 'hero image', photos } = Astro.
 
 // Approximate natural dimensions per ratio — prevents layout shift before images load
 const ratioDims: Record<Ratio, { width: number; height: number }> = {
-  tall: { width: 400, height: 533 },
-  wide: { width: 400, height: 300 },
-  sq:   { width: 400, height: 400 },
+  tall:   { width: 400, height: 533 },
+  wide:   { width: 400, height: 300 },
+  square: { width: 400, height: 400 },
 };
 ---
 

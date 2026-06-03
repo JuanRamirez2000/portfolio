@@ -1,5 +1,6 @@
 ---
-import galleries from '../data/galleries.json';
+import { getGalleries } from '../lib/api';
+const galleries = await getGalleries();
 ---
 
 <nav class="absolute top-0 left-0 right-0 z-40">

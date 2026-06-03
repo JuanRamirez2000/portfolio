@@ -2,6 +2,14 @@ node_modules/
 dist/
 .turbo/
 .astro/
+.wrangler/
 *.log
 npm-debug.log*
 .DS_Store
+.dev.vars
+.claude/
+
+
+apps/**/.env
+apps/**/.env.local
+scripts/.env

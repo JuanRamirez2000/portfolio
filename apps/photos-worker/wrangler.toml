@@ -1,0 +1,11 @@
+name = "portfolio-photos-worker"
+main = "src/index.ts"
+compatibility_date = "2026-06-02"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "portfolio-photos-db"
+database_id = "8d313ffe-045b-4979-8331-48f1b8b700c9"
+
+[vars]
+CORS_ORIGIN = "https://photos.juanr.dev"

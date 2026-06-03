@@ -1,17 +1,15 @@
 ---
 import Base from '../layouts/Base.astro';
 import Nav from '../components/Nav.astro';
+import { getFeaturedPhotos } from '../lib/api';
+import { cfImageUrl, cfImageSrcset } from '../lib/cf-images';
 
-const heroPhotos: Array<{ ratio: 'tall' | 'wide' | 'sq' }> = [
-  { ratio: 'tall' }, { ratio: 'wide' }, { ratio: 'sq' },
-  { ratio: 'wide' }, { ratio: 'tall' }, { ratio: 'sq' },
-  { ratio: 'tall' }, { ratio: 'wide' }, { ratio: 'sq' },
-];
+const featuredPhotos = await getFeaturedPhotos();
 
 const ratioClass: Record<string, string> = {
-  tall: 'aspect-[3/4]',
-  wide: 'aspect-[4/3]',
-  sq:   'aspect-square',
+  tall:   'aspect-[3/4]',
+  wide:   'aspect-[4/3]',
+  square: 'aspect-square',
 };
 ---
 
@@ -49,13 +47,25 @@ const ratioClass: Record<string, string> = {
         <h2 class="font-display font-semibold text-[34px] tracking-[-0.01em] mt-2">Top picks</h2>
         <p class="text-[15px] text-ink-soft mt-2">A rotating little brag-wall of favorites.</p>
       </div>
-      <div class="columns-1 sm:columns-2 lg:columns-3 gap-4.5">
-        {heroPhotos.map((photo) => (
-          <div class:list={['break-inside-avoid mb-4.5 rounded-[20px] overflow-hidden ph', ratioClass[photo.ratio]]}>
-            <span class="tag">photo · {photo.ratio}</span>
-          </div>
-        ))}
-      </div>
+      {featuredPhotos.length > 0 ? (
+        <div class="columns-1 sm:columns-2 lg:columns-3 gap-4.5">
+          {featuredPhotos.map((photo) => (
+            <div class:list={['break-inside-avoid mb-4.5 rounded-[20px] overflow-hidden', ratioClass[photo.ratio]]}>
+              <img
+                src={cfImageUrl(photo.id, 'thumbnail')}
+                srcset={cfImageSrcset(photo.id)}
+                sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                alt={photo.alt}
+                loading="lazy"
+                decoding="async"
+                class="w-full block"
+              />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p class="text-center text-ink-soft font-mono text-[13px] py-20">// nothing featured yet</p>
+      )}
     </section>
 
     <!-- FOOTER -->

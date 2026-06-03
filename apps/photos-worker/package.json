@@ -1,0 +1,15 @@
+{
+  "name": "@portfolio/photos-worker",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "db:migrate": "wrangler d1 migrations apply portfolio-photos-db"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250525.0",
+    "typescript": "^5.0.0",
+    "wrangler": "^4.0.0"
+  }
+}

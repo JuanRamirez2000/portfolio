@@ -31,6 +31,7 @@ jobs:
         run: npm run build --workspace=apps/photos
         env:
           PUBLIC_CF_IMAGES_ACCOUNT_HASH: ${{ secrets.PUBLIC_CF_IMAGES_ACCOUNT_HASH }}
+          PUBLIC_WORKER_URL: ${{ secrets.PUBLIC_WORKER_URL }}
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/pages-action@v1

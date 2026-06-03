@@ -1,0 +1,14 @@
+---
+import GalleryLayout from '../../layouts/GalleryLayout.astro';
+import { getPhotos } from '../../lib/api';
+
+const photos = await getPhotos('grad');
+---
+
+<GalleryLayout
+  title="Graduation — juanr.photo"
+  galleryName="Graduation"
+  tagline="capturing success"
+  heroLabel="graduation hero image"
+  photos={photos}
+/>

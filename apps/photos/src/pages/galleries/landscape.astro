@@ -1,11 +1,8 @@
 ---
 import GalleryLayout from '../../layouts/GalleryLayout.astro';
-import photosData from '../../data/photos.json';
-import type { Photo } from '../../lib/cf-images';
+import { getPhotos } from '../../lib/api';
 
-const photos = (photosData as Photo[]).filter(
-  p => p.gallery.includes('landscape') && !p.id.startsWith('REPLACE')
-);
+const photos = await getPhotos('landscape');
 ---
 
 <GalleryLayout
