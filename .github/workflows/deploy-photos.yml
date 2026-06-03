@@ -2,6 +2,7 @@
 name: Deploy photos app
 
 on:
+  workflow_dispatch:
   push:
     branches: [main]
     paths:
