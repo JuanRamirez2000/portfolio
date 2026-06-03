@@ -1,7 +1,7 @@
 ---
 import Base from './Base.astro';
 import Nav from '../components/Nav.astro';
-import { cfImageUrl, cfImageSrcset } from '../lib/cf-images';
+import { cfImageUrl, cfImageSrcset, cfHeroSrcset } from '../lib/cf-images';
 import type { Photo, Ratio } from '../lib/cf-images';
 
 interface Props {
@@ -32,6 +32,8 @@ const ratioDims: Record<Ratio, { width: number; height: number }> = {
       {heroPhotoId ? (
         <img
           src={cfImageUrl(heroPhotoId, 'hero')}
+          srcset={cfHeroSrcset(heroPhotoId)}
+          sizes="100vw"
           alt={heroLabel}
           class="absolute inset-0 w-full h-full object-cover"
           loading="eager"

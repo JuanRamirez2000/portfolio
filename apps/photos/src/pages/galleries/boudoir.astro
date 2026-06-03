@@ -2,7 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import Nav from '../../components/Nav.astro';
 import AgeGate from '../../components/AgeGate.astro';
-import { cfImageUrl, cfImageSrcset } from '../../lib/cf-images';
+import { cfImageUrl, cfImageSrcset, cfHeroSrcset } from '../../lib/cf-images';
 import { getPhotos, getHero } from '../../lib/api';
 import type { Ratio } from '../../lib/cf-images';
 
@@ -24,7 +24,7 @@ const ratioDims: Record<Ratio, { width: number; height: number }> = {
     <!-- HERO -->
     <header class="relative h-screen min-h-[600px] grid place-items-center overflow-hidden">
       {heroPhotoId ? (
-        <img src={cfImageUrl(heroPhotoId, 'hero')} alt="boudoir hero image" class="absolute inset-0 w-full h-full object-cover" loading="eager" decoding="async" />
+        <img src={cfImageUrl(heroPhotoId, 'hero')} srcset={cfHeroSrcset(heroPhotoId)} sizes="100vw" alt="boudoir hero image" class="absolute inset-0 w-full h-full object-cover" loading="eager" decoding="async" />
       ) : (
         <div class="absolute inset-0 ph border-0 rounded-none" style="background:repeating-linear-gradient(45deg,oklch(0.42 0.012 250) 0 16px,oklch(0.38 0.012 250) 16px 32px)">
           <span class="tag" style="background:oklch(0 0 0/0.35);color:oklch(1 0 0/0.9);border-color:oklch(1 0 0/0.25)">boudoir hero image</span>

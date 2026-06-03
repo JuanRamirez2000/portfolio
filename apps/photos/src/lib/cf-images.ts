@@ -44,3 +44,11 @@ export function cfImageSrcset(imageId: string): string {
     `${cfImageUrl(imageId, 'gallery')} 1200w`,
   ].join(', ');
 }
+
+// Hero srcset: serves gallery at 1200w and hero at 2560w for retina full-bleed
+export function cfHeroSrcset(imageId: string): string {
+  return [
+    `${cfImageUrl(imageId, 'gallery')} 1200w`,
+    `${cfImageUrl(imageId, 'hero')} 2560w`,
+  ].join(', ');
+}
