@@ -1,51 +1,26 @@
 ---
 import Base from '../../layouts/Base.astro';
 import Nav from '../../components/Nav.astro';
+import AgeGate from '../../components/AgeGate.astro';
+import { cfImageUrl, cfImageSrcset } from '../../lib/cf-images';
+import photosData from '../../data/photos.json';
+import type { Photo, Ratio } from '../../lib/cf-images';
 
-const photos: Array<{ ratio: 'tall' | 'wide' | 'sq' }> = [
-  { ratio: 'tall' }, { ratio: 'sq' }, { ratio: 'wide' },
-  { ratio: 'tall' }, { ratio: 'tall' }, { ratio: 'sq' },
-  { ratio: 'wide' }, { ratio: 'tall' }, { ratio: 'sq' },
-];
+const photos = (photosData as Photo[]).filter(
+  p => p.gallery.includes('boudoir') && !p.id.startsWith('REPLACE')
+);
 
-const ratioClass: Record<string, string> = {
-  tall: 'aspect-[3/4]',
-  wide: 'aspect-[4/3]',
-  sq:   'aspect-square',
+const ratioDims: Record<Ratio, { width: number; height: number }> = {
+  tall: { width: 400, height: 533 },
+  wide: { width: 400, height: 300 },
+  sq:   { width: 400, height: 400 },
 };
 ---
 
 <Base title="Boudoir — juanr.photo">
   <div class="bg-bg font-sans text-ink antialiased">
 
-    <!-- AGE GATE OVERLAY -->
-    <div
-      id="age-gate"
-      class="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-md p-6"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="age-gate-title"
-    >
-      <div class="bg-surface border border-line rounded-[28px] shadow-[0_24px_60px_-16px_oklch(0_0_0/0.5)] px-9 py-10 max-w-[420px] w-full text-center flex flex-col gap-4">
-        <span class="self-center font-mono text-[12px] font-medium text-warn-text bg-warn-bg border border-[oklch(0.84_0.07_25)] rounded-full px-3 py-1">18+</span>
-        <h2 id="age-gate-title" class="font-display font-semibold text-[26px] tracking-[-0.01em]">Age Verification</h2>
-        <p class="text-[15px] text-ink-soft leading-[1.6] max-w-[34ch] mx-auto">
-          This gallery contains intimate, 18+ content. By entering you confirm that you are 18 years of age or older.
-        </p>
-        <div class="flex flex-col gap-2.5 mt-2">
-          <button
-            id="age-confirm"
-            class="font-medium text-[15px] bg-ink text-bg border-none rounded-full px-6 py-3.5 cursor-pointer transition-opacity duration-150 hover:opacity-85"
-          >
-            I am 18 or older — Enter
-          </button>
-          <a href="/" class="font-mono text-[13px] text-ink-soft no-underline px-2 py-2 rounded-full transition-colors duration-150 hover:text-ink">
-            Take me back
-          </a>
-        </div>
-      </div>
-    </div>
-
+    <AgeGate />
     <Nav />
 
     <!-- HERO -->
@@ -67,13 +42,27 @@ const ratioClass: Record<string, string> = {
 
     <!-- GALLERY GRID -->
     <section class="py-20 pb-24 w-full max-w-[1180px] mx-auto px-8">
-      <div class="columns-1 sm:columns-2 lg:columns-3 gap-4.5">
-        {photos.map((photo) => (
-          <div class:list={['break-inside-avoid mb-4.5 rounded-[20px] overflow-hidden ph', ratioClass[photo.ratio]]}>
-            <span class="tag">photo · {photo.ratio}</span>
-          </div>
-        ))}
-      </div>
+      {photos.length > 0 ? (
+        <div class="columns-1 sm:columns-2 lg:columns-3 gap-4.5">
+          {photos.map((photo) => (
+            <div class="break-inside-avoid mb-4.5 rounded-[20px] overflow-hidden">
+              <img
+                src={cfImageUrl(photo.id, 'thumbnail')}
+                srcset={cfImageSrcset(photo.id)}
+                sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                alt={photo.alt}
+                width={ratioDims[photo.ratio].width}
+                height={ratioDims[photo.ratio].height}
+                loading="lazy"
+                decoding="async"
+                class="w-full block"
+              />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p class="text-center text-ink-soft font-mono text-[13px] py-20">// coming soon</p>
+      )}
     </section>
 
     <!-- FOOTER -->
@@ -85,20 +74,3 @@ const ratioClass: Record<string, string> = {
     </footer>
   </div>
 </Base>
-
-<script>
-  const STORAGE_KEY = 'age_confirmed_boudoir';
-  const gate = document.getElementById('age-gate')!;
-
-  if (localStorage.getItem(STORAGE_KEY) === 'true') {
-    gate.style.display = 'none';
-  } else {
-    document.body.style.overflow = 'hidden';
-  }
-
-  document.getElementById('age-confirm')!.addEventListener('click', () => {
-    localStorage.setItem(STORAGE_KEY, 'true');
-    gate.style.display = 'none';
-    document.body.style.overflow = '';
-  });
-</script>

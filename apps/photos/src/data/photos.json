@@ -1,23 +1,29 @@
 [
   {
-    "filename": "placeholder-portrait.jpg",
-    "title": "Placeholder Portrait",
-    "alt": "A placeholder portrait photograph to be replaced with real content",
-    "tags": ["portrait", "featured"],
-    "year": 2025
+    "id": "e3c27d81-0610-4074-37c0-994c4ab49100",
+    "gallery": ["portraits"],
+    "ratio": "tall",
+    "title": "Em Yeu",
+    "alt": "A portrait photograph of my beautiful girlfried",
+    "year": 2026,
+    "featured": true
   },
   {
-    "filename": "placeholder-landscape.jpg",
+    "id": "REPLACE_WITH_CF_IMAGE_ID",
+    "gallery": ["landscape"],
+    "ratio": "wide",
     "title": "Placeholder Landscape",
-    "alt": "A placeholder landscape photograph to be replaced with real content",
-    "tags": ["landscape"],
-    "year": 2025
+    "alt": "A landscape photograph — replace with real description",
+    "year": 2025,
+    "featured": false
   },
   {
-    "filename": "placeholder-street.jpg",
-    "title": "Placeholder Street",
-    "alt": "A placeholder street photograph to be replaced with real content",
-    "tags": ["street", "featured"],
-    "year": 2024
+    "id": "REPLACE_WITH_CF_IMAGE_ID",
+    "gallery": ["boudoir"],
+    "ratio": "tall",
+    "title": "Placeholder Boudoir",
+    "alt": "An intimate photograph — replace with real description",
+    "year": 2025,
+    "featured": false
   }
 ]

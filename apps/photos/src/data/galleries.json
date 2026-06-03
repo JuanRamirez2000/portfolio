@@ -7,6 +7,13 @@
     "ageGated": false
   },
   {
+    "name": "Graduation",
+    "slug": "grad",
+    "count": 31,
+    "tagline": "capturing success",
+    "ageGated": false
+  },
+  {
     "name": "Landscape",
     "slug": "landscape",
     "count": 31,

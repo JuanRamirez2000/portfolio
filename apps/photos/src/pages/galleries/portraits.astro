@@ -1,12 +1,11 @@
 ---
 import GalleryLayout from '../../layouts/GalleryLayout.astro';
+import photosData from '../../data/photos.json';
+import type { Photo } from '../../lib/cf-images';
 
-const photos: Array<{ ratio: 'tall' | 'wide' | 'sq' }> = [
-  { ratio: 'tall' }, { ratio: 'sq' }, { ratio: 'tall' },
-  { ratio: 'wide' }, { ratio: 'tall' }, { ratio: 'sq' },
-  { ratio: 'tall' }, { ratio: 'wide' }, { ratio: 'tall' },
-  { ratio: 'sq' }, { ratio: 'tall' }, { ratio: 'wide' },
-];
+const photos = (photosData as Photo[]).filter(
+  p => p.gallery.includes('portraits') && !p.id.startsWith('REPLACE')
+);
 ---
 
 <GalleryLayout

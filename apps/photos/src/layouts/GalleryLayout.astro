@@ -1,21 +1,24 @@
 ---
 import Base from './Base.astro';
 import Nav from '../components/Nav.astro';
+import { cfImageUrl, cfImageSrcset } from '../lib/cf-images';
+import type { Photo, Ratio } from '../lib/cf-images';
 
 interface Props {
   title: string;
   galleryName: string;
   tagline: string;
   heroLabel?: string;
-  photos: Array<{ ratio: 'tall' | 'wide' | 'sq' }>;
+  photos: Photo[];
 }
 
 const { title, galleryName, tagline, heroLabel = 'hero image', photos } = Astro.props;
 
-const ratioClass: Record<string, string> = {
-  tall: 'aspect-[3/4]',
-  wide: 'aspect-[4/3]',
-  sq:   'aspect-square',
+// Approximate natural dimensions per ratio — prevents layout shift before images load
+const ratioDims: Record<Ratio, { width: number; height: number }> = {
+  tall: { width: 400, height: 533 },
+  wide: { width: 400, height: 300 },
+  sq:   { width: 400, height: 400 },
 };
 ---
 
@@ -43,13 +46,27 @@ const ratioClass: Record<string, string> = {
     <!-- GALLERY GRID -->
     <section class="py-20 pb-24 w-full max-w-[1180px] mx-auto px-8">
       <slot name="before-grid" />
-      <div class="columns-1 sm:columns-2 lg:columns-3 gap-4.5">
-        {photos.map((photo) => (
-          <div class:list={['break-inside-avoid mb-4.5 rounded-[20px] overflow-hidden ph', ratioClass[photo.ratio]]}>
-            <span class="tag">photo · {photo.ratio}</span>
-          </div>
-        ))}
-      </div>
+      {photos.length > 0 ? (
+        <div class="columns-1 sm:columns-2 lg:columns-3 gap-4.5">
+          {photos.map((photo) => (
+            <div class="break-inside-avoid mb-4.5 rounded-[20px] overflow-hidden">
+              <img
+                src={cfImageUrl(photo.id, 'thumbnail')}
+                srcset={cfImageSrcset(photo.id)}
+                sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                alt={photo.alt}
+                width={ratioDims[photo.ratio].width}
+                height={ratioDims[photo.ratio].height}
+                loading="lazy"
+                decoding="async"
+                class="w-full block"
+              />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p class="text-center text-ink-soft font-mono text-[13px] py-20">// coming soon</p>
+      )}
     </section>
 
     <!-- FOOTER -->

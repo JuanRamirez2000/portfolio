@@ -1,0 +1,77 @@
+---
+// Gate renders hidden by default. The is:inline script reveals it
+// synchronously (before first paint) only when the user has not confirmed,
+// eliminating the flash-of-gate on returning visitors.
+---
+
+<div
+  id="age-gate"
+  style="display:none"
+  class="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-md p-6"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="age-gate-title"
+>
+  <div class="bg-surface border border-line rounded-[28px] shadow-[0_24px_60px_-16px_oklch(0_0_0/0.5)] px-9 py-10 max-w-[420px] w-full text-center flex flex-col gap-4">
+    <span class="self-center font-mono text-[12px] font-medium text-warn-text bg-warn-bg border border-[oklch(0.84_0.07_25)] rounded-full px-3 py-1">18+</span>
+    <h2 id="age-gate-title" class="font-display font-semibold text-[26px] tracking-[-0.01em]">Age Verification</h2>
+    <p class="text-[15px] text-ink-soft leading-[1.6] max-w-[34ch] mx-auto">
+      This gallery contains intimate, 18+ content. By entering you confirm
+      that you are 18 years of age or older.
+    </p>
+    <div class="flex flex-col gap-2.5 mt-2">
+      <button
+        id="age-confirm"
+        class="font-medium text-[15px] bg-ink text-bg border-none rounded-full px-6 py-3.5 cursor-pointer transition-opacity duration-150 hover:opacity-85"
+      >
+        I am 18 or older — Enter
+      </button>
+      <a
+        href="/"
+        class="font-mono text-[13px] text-ink-soft no-underline px-2 py-2 rounded-full transition-colors duration-150 hover:text-ink"
+      >
+        Take me back
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Runs synchronously during HTML parsing — no paint happens before this fires -->
+<script is:inline>
+  (function () {
+    if (localStorage.getItem('age_confirmed_boudoir') !== 'true') {
+      document.getElementById('age-gate').style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+  }());
+</script>
+
+<script>
+  const STORAGE_KEY = 'age_confirmed_boudoir';
+  const gate        = document.getElementById('age-gate')!;
+  const confirmBtn  = document.getElementById('age-confirm')!;
+
+  // Only wire focus management when the gate is actually open
+  if (gate.style.display === 'flex') {
+    confirmBtn.focus();
+
+    const focusable = [...gate.querySelectorAll<HTMLElement>('button, a[href]')];
+    const first = focusable[0];
+    const last  = focusable[focusable.length - 1];
+
+    gate.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (e.key !== 'Tab') return;
+      if (e.shiftKey) {
+        if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+      } else {
+        if (document.activeElement === last)  { e.preventDefault(); first.focus(); }
+      }
+    });
+  }
+
+  confirmBtn.addEventListener('click', () => {
+    localStorage.setItem(STORAGE_KEY, 'true');
+    gate.style.display = 'none';
+    document.body.style.overflow = '';
+  });
+</script>
