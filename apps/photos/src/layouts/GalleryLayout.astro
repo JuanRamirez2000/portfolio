@@ -9,10 +9,11 @@ interface Props {
   galleryName: string;
   tagline: string;
   heroLabel?: string;
+  heroPhotoId?: string | null;
   photos: Photo[];
 }
 
-const { title, galleryName, tagline, heroLabel = 'hero image', photos } = Astro.props;
+const { title, galleryName, tagline, heroLabel = 'hero image', heroPhotoId, photos } = Astro.props;
 
 // Approximate natural dimensions per ratio — prevents layout shift before images load
 const ratioDims: Record<Ratio, { width: number; height: number }> = {
@@ -28,9 +29,19 @@ const ratioDims: Record<Ratio, { width: number; height: number }> = {
 
     <!-- HERO -->
     <header class="relative h-screen min-h-[600px] grid place-items-center overflow-hidden">
-      <div class="absolute inset-0 ph border-0 rounded-none" style="background:repeating-linear-gradient(45deg,oklch(0.42 0.012 250) 0 16px,oklch(0.38 0.012 250) 16px 32px)">
-        <span class="tag" style="background:oklch(0 0 0/0.35);color:oklch(1 0 0/0.9);border-color:oklch(1 0 0/0.25)">{heroLabel}</span>
-      </div>
+      {heroPhotoId ? (
+        <img
+          src={cfImageUrl(heroPhotoId, 'hero')}
+          alt={heroLabel}
+          class="absolute inset-0 w-full h-full object-cover"
+          loading="eager"
+          decoding="async"
+        />
+      ) : (
+        <div class="absolute inset-0 ph border-0 rounded-none" style="background:repeating-linear-gradient(45deg,oklch(0.42 0.012 250) 0 16px,oklch(0.38 0.012 250) 16px 32px)">
+          <span class="tag" style="background:oklch(0 0 0/0.35);color:oklch(1 0 0/0.9);border-color:oklch(1 0 0/0.25)">{heroLabel}</span>
+        </div>
+      )}
       <div class="absolute inset-0 bg-[linear-gradient(180deg,oklch(0_0_0/0.35)_0%,oklch(0_0_0/0.05)_35%,oklch(0_0_0/0.45)_100%)]" aria-hidden="true"></div>
       <div class="relative text-center text-white px-6 z-10">
         <div class="font-mono text-[13px] tracking-[0.18em] uppercase opacity-85 mb-4.5">GALLERY</div>

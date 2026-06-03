@@ -212,6 +212,28 @@ async function handleDeletePhoto(id: string, request: Request, env: Env): Promis
   return json({ ok: true }, env);
 }
 
+// GET /heroes/:page — returns the hero photo_id for a page, or null
+async function handleGetHero(page: string, env: Env): Promise<Response> {
+  const row = await env.DB.prepare('SELECT photo_id FROM heroes WHERE page = ?')
+    .bind(page)
+    .first<{ photo_id: string }>();
+  return json(row ? { photoId: row.photo_id } : null, env);
+}
+
+// PUT /heroes/:page — set or replace the hero for a page
+async function handleSetHero(page: string, request: Request, env: Env): Promise<Response> {
+  if (!isAuthorized(request, env)) return unauthorized(env);
+  const { photoId } = await request.json<{ photoId: string }>();
+  if (!photoId) return json({ error: 'photoId required' }, env, 400);
+
+  await env.DB.prepare(
+    `INSERT INTO heroes (page, photo_id) VALUES (?, ?)
+     ON CONFLICT(page) DO UPDATE SET photo_id = excluded.photo_id, updated_at = datetime('now')`
+  ).bind(page, photoId).run();
+
+  return json({ ok: true, page, photoId }, env);
+}
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
@@ -231,6 +253,13 @@ export default {
       const id = photoMatch[1];
       if (method === 'PATCH')  return handleUpdatePhoto(id, request, env);
       if (method === 'DELETE') return handleDeletePhoto(id, request, env);
+    }
+
+    const heroMatch = pathname.match(/^\/heroes\/([^/]+)$/);
+    if (heroMatch) {
+      const page = heroMatch[1];
+      if (method === 'GET') return handleGetHero(page, env);
+      if (method === 'PUT') return handleSetHero(page, request, env);
     }
 
     return json({ error: 'Not found' }, env, 404);

@@ -29,3 +29,8 @@ export async function getFeaturedPhotos(): Promise<Photo[]> {
 export async function getGalleries(): Promise<Gallery[]> {
   return workerFetch<Gallery[]>('/galleries');
 }
+
+export async function getHero(page: string): Promise<string | null> {
+  const res = await workerFetch<{ photoId: string } | null>(`/heroes/${page}`);
+  return res?.photoId ?? null;
+}

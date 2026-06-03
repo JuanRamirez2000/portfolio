@@ -1,8 +1,8 @@
 ---
 import GalleryLayout from '../../layouts/GalleryLayout.astro';
-import { getPhotos } from '../../lib/api';
+import { getPhotos, getHero } from '../../lib/api';
 
-const photos = await getPhotos('portraits');
+const [photos, heroPhotoId] = await Promise.all([getPhotos('portraits'), getHero('portraits')]);
 ---
 
 <GalleryLayout
@@ -10,5 +10,6 @@ const photos = await getPhotos('portraits');
   galleryName="Portraits"
   tagline="faces, moods, and the occasional glare"
   heroLabel="portraits hero image"
+  heroPhotoId={heroPhotoId}
   photos={photos}
 />
