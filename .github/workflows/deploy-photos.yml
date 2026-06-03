@@ -1,3 +1,4 @@
+# Deploy photos app to Cloudflare Pages
 name: Deploy photos app
 
 on:
