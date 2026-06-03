@@ -1,0 +1,5 @@
+{
+  "name": "portfolio-photos",
+  "compatibility_date": "2026-06-03",
+  "assets": { "directory": "./dist" }
+}
