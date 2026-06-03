@@ -74,19 +74,6 @@ const [featuredPhotos, heroPhotoId] = await Promise.all([
 
     <!-- TOP PICKS -->
     <section class="py-20 pb-24 w-full max-w-[1180px] mx-auto px-8">
-      <div class="text-center mb-11">
-        <div class="font-mono text-[12.5px] text-sage-deep tracking-[0.04em]">
-          // the ones i'd actually print
-        </div>
-        <h2
-          class="font-display font-semibold text-[34px] tracking-[-0.01em] mt-2"
-        >
-          Top picks
-        </h2>
-        <p class="text-[15px] text-ink-soft mt-2">
-          A rotating little brag-wall of favorites.
-        </p>
-      </div>
       {
         featuredPhotos.length > 0 ? (
           <div class="columns-1 sm:columns-2 lg:columns-3 gap-4.5">
