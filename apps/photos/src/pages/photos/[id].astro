@@ -1,0 +1,68 @@
+---
+import Base from '../../layouts/Base.astro';
+import Nav from '../../components/Nav.astro';
+import { getPhotos } from '../../lib/api';
+import { cfImageUrl, cfImageSrcset } from '../../lib/cf-images';
+
+export async function getStaticPaths() {
+  const photos = await getPhotos();
+  return photos.map((photo) => ({
+    params: { id: photo.id },
+    props: { photo },
+  }));
+}
+
+const { photo } = Astro.props;
+
+const galleryLabels: Record<string, string> = {
+  portraits: 'Portraits',
+  landscape: 'Landscape',
+  grad: 'Grad',
+  boudoir: 'Boudoir',
+};
+
+const ogImage = cfImageUrl(photo.id, 'gallery');
+---
+
+<Base title={`${photo.title} — juanr.photo`}>
+  <Fragment slot="head">
+    <meta property="og:title" content={`${photo.title} — juanr.photo`} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:type" content="article" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={ogImage} />
+  </Fragment>
+
+  <div class="bg-[oklch(0.09_0.007_250)] min-h-screen font-sans antialiased">
+    <Nav />
+
+    <main class="min-h-screen flex flex-col items-center justify-center px-6 pt-20 pb-16">
+      <img
+        src={cfImageUrl(photo.id, 'gallery')}
+        srcset={cfImageSrcset(photo.id)}
+        sizes="(min-width: 1024px) 70vw, 90vw"
+        alt={photo.alt}
+        class="max-h-[78vh] max-w-full object-contain rounded-2xl shadow-[0_40px_100px_-20px_oklch(0_0_0/0.8)]"
+        loading="eager"
+        decoding="async"
+      />
+
+      <div class="mt-8 text-center">
+        <h1 class="font-display font-medium text-[26px] text-white tracking-[-0.01em]">
+          {photo.title}
+        </h1>
+        <div class="flex items-center justify-center gap-2 mt-3.5 flex-wrap">
+          {photo.galleries.map((slug) => (
+            <a
+              href={`/galleries/${slug}`}
+              class="font-mono text-[11.5px] text-white/65 border border-white/18 rounded-full px-3 py-1 hover:text-white/90 hover:border-white/35 transition-colors no-underline"
+            >
+              {galleryLabels[slug] ?? slug}
+            </a>
+          ))}
+          <span class="font-mono text-[11.5px] text-white/35">{photo.year}</span>
+        </div>
+      </div>
+    </main>
+  </div>
+</Base>

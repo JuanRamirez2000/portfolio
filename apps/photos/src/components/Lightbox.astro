@@ -54,29 +54,30 @@
 </div>
 
 <script>
-  const lb      = document.getElementById('lightbox')!;
-  const lbImg   = document.getElementById('lb-img') as HTMLImageElement;
+  const lb       = document.getElementById('lightbox')!;
+  const lbImg    = document.getElementById('lb-img') as HTMLImageElement;
   const backdrop = document.getElementById('lb-backdrop')!;
   const closeBtn = document.getElementById('lb-close')!;
   const copyBtn  = document.getElementById('lb-copy')!;
   const toast    = document.getElementById('lb-toast')!;
 
+  let currentId = '';
+
   function open(src: string, alt: string, id: string) {
     lbImg.src = src;
     lbImg.alt = alt;
+    currentId = id;
     lb.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
-    history.replaceState(null, '', `#photo-${id}`);
   }
 
   function close() {
     lb.classList.add('hidden');
     lbImg.src = '';
+    currentId = '';
     document.body.style.overflow = '';
-    history.replaceState(null, '', location.pathname + location.search);
   }
 
-  // Event delegation — works for any [data-lightbox] on the page
   document.addEventListener('click', (e) => {
     const el = (e.target as Element).closest('[data-lightbox]');
     if (!el) return;
@@ -95,20 +96,8 @@
   });
 
   copyBtn.addEventListener('click', async () => {
-    await navigator.clipboard.writeText(location.href);
+    await navigator.clipboard.writeText(`${location.origin}/photos/${currentId}`);
     toast.classList.remove('hidden');
     setTimeout(() => toast.classList.add('hidden'), 2000);
   });
-
-  // Auto-open if URL already has a #photo-<id> hash
-  const hash = location.hash;
-  if (hash.startsWith('#photo-')) {
-    const id = hash.slice(7);
-    const el = document.querySelector(`[data-lb-id="${id}"]`);
-    if (el) open(
-      el.getAttribute('data-lb-src') ?? '',
-      el.getAttribute('data-lb-alt') ?? '',
-      id,
-    );
-  }
 </script>
