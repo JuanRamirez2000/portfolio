@@ -33,34 +33,49 @@ const ogImage = cfImageUrl(photo.id, 'gallery');
     <meta name="twitter:image" content={ogImage} />
   </Fragment>
 
-  <div class="bg-[oklch(0.09_0.007_250)] min-h-screen font-sans antialiased">
-    <Nav />
+  <div class="relative min-h-screen font-sans antialiased overflow-hidden">
 
-    <main class="min-h-screen flex flex-col items-center justify-center px-6 pt-20 pb-16">
+    <!-- Blurred photo background — colors bleed from the image itself -->
+    <div class="absolute inset-0 z-0">
+      <img
+        src={cfImageUrl(photo.id, 'gallery')}
+        alt=""
+        aria-hidden="true"
+        class="w-full h-full object-cover scale-125 blur-[72px] opacity-80"
+        loading="eager"
+      />
+      <div class="absolute inset-0 bg-black/30"></div>
+    </div>
+
+    <div class="relative z-10">
+      <Nav />
+    </div>
+
+    <main class="relative z-10 min-h-screen flex flex-col items-center justify-center px-6 pt-20 pb-16">
       <img
         src={cfImageUrl(photo.id, 'gallery')}
         srcset={cfImageSrcset(photo.id)}
         sizes="(min-width: 1024px) 70vw, 90vw"
         alt={photo.alt}
-        class="max-h-[78vh] max-w-full object-contain rounded-2xl shadow-[0_40px_100px_-20px_oklch(0_0_0/0.8)]"
+        class="max-h-[78vh] max-w-full object-contain rounded-2xl shadow-[0_40px_120px_-16px_oklch(0_0_0/0.6)]"
         loading="eager"
         decoding="async"
       />
 
       <div class="mt-8 text-center">
-        <h1 class="font-display font-medium text-[26px] text-white tracking-[-0.01em]">
+        <h1 class="font-display font-medium text-[26px] text-white tracking-[-0.01em] [text-shadow:0_2px_16px_oklch(0_0_0/0.4)]">
           {photo.title}
         </h1>
         <div class="flex items-center justify-center gap-2 mt-3.5 flex-wrap">
           {photo.galleries.map((slug) => (
             <a
               href={`/galleries/${slug}`}
-              class="font-mono text-[11.5px] text-white/65 border border-white/18 rounded-full px-3 py-1 hover:text-white/90 hover:border-white/35 transition-colors no-underline"
+              class="font-mono text-[11.5px] text-white/85 bg-white/12 border border-white/20 rounded-full px-3 py-1 hover:bg-white/22 hover:text-white transition-colors no-underline backdrop-blur-sm"
             >
               {galleryLabels[slug] ?? slug}
             </a>
           ))}
-          <span class="font-mono text-[11.5px] text-white/35">{photo.year}</span>
+          <span class="font-mono text-[11.5px] text-white/50">{photo.year}</span>
         </div>
       </div>
     </main>
