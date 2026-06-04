@@ -58,16 +58,16 @@ const ratioDims: Record<Ratio, { width: number; height: number }> = {
     </header>
 
     <!-- GALLERY GRID -->
-    <section class="py-20 pb-24 w-full max-w-[1180px] mx-auto px-8">
+    <section class="py-20 pb-24 w-full max-w-295 2xl:max-w-350 3xl:max-w-400 mx-auto px-8">
       <slot name="before-grid" />
       {photos.length > 0 ? (
-        <div class="columns-1 sm:columns-2 lg:columns-3 gap-4.5">
+        <div class="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 2xl:columns-5 3xl:columns-6 gap-4.5">
           {photos.map((photo) => (
             <div class="break-inside-avoid mb-4.5 rounded-[20px] overflow-hidden">
               <img
                 src={cfImageUrl(photo.id, 'thumbnail')}
                 srcset={cfImageSrcset(photo.id)}
-                sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                sizes="(min-width: 1920px) 17vw, (min-width: 1536px) 20vw, (min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                 alt={photo.alt}
                 width={ratioDims[photo.ratio].width}
                 height={ratioDims[photo.ratio].height}
@@ -91,7 +91,7 @@ const ratioDims: Record<Ratio, { width: number; height: number }> = {
 
     <!-- FOOTER -->
     <footer class="border-t border-line">
-      <div class="w-full max-w-[1180px] mx-auto px-8 py-11 flex items-center justify-between flex-wrap gap-3.5 font-mono text-[12.5px] text-ink-soft">
+      <div class="w-full max-w-295 2xl:max-w-350 3xl:max-w-400 mx-auto px-8 py-11 flex items-center justify-between flex-wrap gap-3.5 font-mono text-[12.5px] text-ink-soft">
         <span class="font-display font-semibold text-[18px] text-ink">juanr.photo</span>
         <span>Juan R. - Made with love</span>
       </div>
