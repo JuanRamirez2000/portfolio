@@ -28,6 +28,7 @@
     src=""
     alt=""
     class="relative z-10 max-w-[80vw] max-h-[88vh] object-contain rounded-2xl shadow-[0_32px_80px_-12px_oklch(0_0_0/0.7)]"
+    style="transition: opacity 180ms ease"
   />
 
   <!-- Next -->
@@ -123,14 +124,31 @@
     function openIdx(idx: number) {
       const all = getAll();
       if (idx < 0 || idx >= all.length) return;
+
+      const el     = all[idx];
+      const newSrc = el.getAttribute('data-lb-src') ?? '';
+      const newAlt = el.getAttribute('data-lb-alt') ?? '';
+      const newId  = el.getAttribute('data-lb-id') ?? '';
+      const isOpen = !lb.classList.contains('hidden');
+
       currentIdx = idx;
-      const el = all[idx];
-      currentId  = el.getAttribute('data-lb-id') ?? '';
-      lbImg.src  = el.getAttribute('data-lb-src') ?? '';
-      lbImg.alt  = el.getAttribute('data-lb-alt') ?? '';
-      lb.classList.remove('hidden');
-      document.body.style.overflow = 'hidden';
+      currentId  = newId;
       updateControls();
+
+      if (isOpen) {
+        // Crossfade between images
+        lbImg.style.opacity = '0';
+        setTimeout(() => {
+          lbImg.src = newSrc;
+          lbImg.alt = newAlt;
+          lbImg.style.opacity = '1';
+        }, 180);
+      } else {
+        lbImg.src = newSrc;
+        lbImg.alt = newAlt;
+        lb.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+      }
     }
 
     function close() {
