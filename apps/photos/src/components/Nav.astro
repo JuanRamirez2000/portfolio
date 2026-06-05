@@ -48,14 +48,23 @@ const galleries = (await getGalleries()).filter(g => g.slug !== 'boudoir');
 </nav>
 
 <script>
-  const wrap = document.getElementById('galleriesWrap')!;
-  const btn  = document.getElementById('galleriesBtn')!;
+  let ctrl: AbortController | null = null;
 
-  function open()  { wrap.dataset.open = '';  btn.setAttribute('aria-expanded', 'true');  }
-  function close() { delete wrap.dataset.open; btn.setAttribute('aria-expanded', 'false'); }
+  document.addEventListener('astro:page-load', () => {
+    ctrl?.abort();
+    ctrl = new AbortController();
+    const { signal } = ctrl;
 
-  btn.addEventListener('click', (e) => { e.stopPropagation(); 'open' in wrap.dataset ? close() : open(); });
-  wrap.addEventListener('mouseenter', open);
-  wrap.addEventListener('mouseleave', close);
-  document.addEventListener('click', close);
+    const wrap = document.getElementById('galleriesWrap');
+    if (!wrap) return;
+    const btn = document.getElementById('galleriesBtn')!;
+
+    const open  = () => { wrap.dataset.open = '';  btn.setAttribute('aria-expanded', 'true');  };
+    const close = () => { delete wrap.dataset.open; btn.setAttribute('aria-expanded', 'false'); };
+
+    btn.addEventListener('click', (e) => { e.stopPropagation(); 'open' in wrap.dataset ? close() : open(); }, { signal });
+    wrap.addEventListener('mouseenter', open, { signal });
+    wrap.addEventListener('mouseleave', close, { signal });
+    document.addEventListener('click', close, { signal });
+  });
 </script>
