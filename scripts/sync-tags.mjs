@@ -11,25 +11,9 @@ import { readFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { homedir } from 'node:os';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { WORKER_URL, UPLOAD_SECRET } from './lib/env.mjs';
 
-const envPath = path.join(path.dirname(fileURLToPath(import.meta.url)), '.env');
-try {
-  const raw = await readFile(envPath, 'utf8');
-  for (const line of raw.split('\n')) {
-    const eqIdx = line.indexOf('=');
-    if (eqIdx > 0) process.env[line.slice(0, eqIdx).trim()] = line.slice(eqIdx + 1).trim();
-  }
-} catch { /* rely on env vars */ }
-
-const WORKER_URL    = process.env.PUBLIC_WORKER_URL;
-const UPLOAD_SECRET = process.env.UPLOAD_SECRET;
-const TAGS_FILE     = path.join(homedir(), 'Documents', 'Photography', 'Portfolio', 'tags.json');
-
-if (!WORKER_URL || !UPLOAD_SECRET) {
-  console.error('Missing PUBLIC_WORKER_URL or UPLOAD_SECRET in scripts/.env');
-  process.exit(1);
-}
+const TAGS_FILE = path.join(homedir(), 'Documents', 'Photography', 'Portfolio', 'tags.json');
 
 if (!existsSync(TAGS_FILE)) {
   console.error(`tags.json not found at ${TAGS_FILE}`);

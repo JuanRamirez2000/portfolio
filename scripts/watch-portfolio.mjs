@@ -21,32 +21,11 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { homedir } from 'node:os';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { WORKER_URL, UPLOAD_SECRET } from './lib/env.mjs';
+import { IMAGE_EXTS, getImageRatio } from './lib/image.mjs';
 
-// Load scripts/.env
-const envPath = path.join(path.dirname(fileURLToPath(import.meta.url)), '.env');
-try {
-  const raw = await readFile(envPath, 'utf8');
-  for (const line of raw.split('\n')) {
-    const eqIdx = line.indexOf('=');
-    if (eqIdx > 0) {
-      const k = line.slice(0, eqIdx).trim();
-      const v = line.slice(eqIdx + 1).trim();
-      if (k) process.env[k] = v;
-    }
-  }
-} catch { /* no .env, rely on env vars */ }
-
-const WORKER_URL    = process.env.PUBLIC_WORKER_URL;
-const UPLOAD_SECRET = process.env.UPLOAD_SECRET;
-const WATCH_DIR     = path.join(homedir(), 'Documents', 'Photography', 'Portfolio');
-const TAGS_FILE     = path.join(WATCH_DIR, 'tags.json');
-const IMAGE_EXTS    = new Set(['.jpg', '.jpeg', '.png', '.webp', '.avif', '.gif']);
-
-if (!WORKER_URL || !UPLOAD_SECRET) {
-  console.error('Missing PUBLIC_WORKER_URL or UPLOAD_SECRET in scripts/.env');
-  process.exit(1);
-}
+const WATCH_DIR = path.join(homedir(), 'Documents', 'Photography', 'Portfolio');
+const TAGS_FILE = path.join(WATCH_DIR, 'tags.json');
 
 async function readTags() {
   if (!existsSync(TAGS_FILE)) return {};
@@ -55,20 +34,6 @@ async function readTags() {
   } catch {
     console.warn('⚠ Could not parse tags.json — using empty tags');
     return {};
-  }
-}
-
-async function getImageRatio(filePath) {
-  try {
-    const { imageSize } = await import('image-size');
-    const { width, height } = imageSize(filePath);
-    if (!width || !height) return 'tall';
-    const ratio = width / height;
-    if (ratio > 1.2)  return 'wide';
-    if (ratio < 0.85) return 'tall';
-    return 'square';
-  } catch {
-    return 'tall';
   }
 }
 

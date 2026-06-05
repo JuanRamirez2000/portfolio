@@ -4,6 +4,7 @@ import Nav from '../../components/Nav.astro';
 import { getPhotos } from '../../lib/api';
 import { cfImageUrl, cfImageSrcset } from '../../lib/cf-images';
 import type { Photo } from '../../lib/cf-images';
+import { GALLERY_LABELS } from '../../lib/constants';
 
 export async function getStaticPaths() {
   const photos = await getPhotos();
@@ -25,13 +26,6 @@ interface Props {
 
 const { photo, prev, next } = Astro.props;
 
-const galleryLabels: Record<string, string> = {
-  portraits: 'Portraits',
-  landscape: 'Landscape',
-  grad: 'Grad',
-  boudoir: 'Boudoir',
-};
-
 const ogImage = cfImageUrl(photo.id, 'gallery');
 ---
 
@@ -46,7 +40,6 @@ const ogImage = cfImageUrl(photo.id, 'gallery');
 
   <div class="relative min-h-screen font-sans antialiased overflow-hidden">
 
-    <!-- Blurred ambient background -->
     <div class="absolute inset-0 z-0">
       <img
         src={cfImageUrl(photo.id, 'gallery')}
@@ -74,7 +67,6 @@ const ogImage = cfImageUrl(photo.id, 'gallery');
         decoding="async"
       />
 
-      <!-- Metadata -->
       <div class="mt-8 text-center">
         <h1 class="font-display font-medium text-[26px] text-white tracking-[-0.01em] [text-shadow:0_2px_16px_oklch(0_0_0/0.4)]">
           {photo.title}
@@ -85,14 +77,13 @@ const ogImage = cfImageUrl(photo.id, 'gallery');
               href={`/galleries/${slug}`}
               class="font-mono text-[11.5px] text-white/85 bg-white/12 border border-white/20 rounded-full px-3 py-1 hover:bg-white/22 hover:text-white transition-colors no-underline backdrop-blur-sm"
             >
-              {galleryLabels[slug] ?? slug}
+              {GALLERY_LABELS[slug] ?? slug}
             </a>
           ))}
           <span class="font-mono text-[11.5px] text-white/50">{photo.year}</span>
         </div>
       </div>
 
-      <!-- Prev / Next -->
       <div class="mt-10 flex items-center gap-4">
         {prev ? (
           <a

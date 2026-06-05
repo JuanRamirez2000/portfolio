@@ -10,27 +10,9 @@
  *   node scripts/set-hero.mjs portraits abc123-cf-image-id
  */
 
-import { readFile } from 'node:fs/promises';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { WORKER_URL, UPLOAD_SECRET } from './lib/env.mjs';
 
-const envPath = path.join(path.dirname(fileURLToPath(import.meta.url)), '.env');
-try {
-  const raw = await readFile(envPath, 'utf8');
-  for (const line of raw.split('\n')) {
-    const eqIdx = line.indexOf('=');
-    if (eqIdx > 0) process.env[line.slice(0, eqIdx).trim()] = line.slice(eqIdx + 1).trim();
-  }
-} catch { /* rely on env vars */ }
-
-const WORKER_URL    = process.env.PUBLIC_WORKER_URL;
-const UPLOAD_SECRET = process.env.UPLOAD_SECRET;
 const [page, photoId] = process.argv.slice(2);
-
-if (!WORKER_URL || !UPLOAD_SECRET) {
-  console.error('Missing PUBLIC_WORKER_URL or UPLOAD_SECRET in scripts/.env');
-  process.exit(1);
-}
 
 if (!page || !photoId) {
   console.error('Usage: node scripts/set-hero.mjs <page> <photoId>');

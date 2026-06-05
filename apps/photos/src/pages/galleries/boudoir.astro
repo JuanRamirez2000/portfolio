@@ -2,17 +2,13 @@
 import Base from '../../layouts/Base.astro';
 import Nav from '../../components/Nav.astro';
 import AgeGate from '../../components/AgeGate.astro';
-import { cfImageUrl, cfImageSrcset, cfHeroSrcset } from '../../lib/cf-images';
+import Lightbox from '../../components/Lightbox.astro';
+import PhotoGrid from '../../components/PhotoGrid.astro';
+import Footer from '../../components/Footer.astro';
+import { cfImageUrl, cfHeroSrcset } from '../../lib/cf-images';
 import { getPhotos, getHero } from '../../lib/api';
-import type { Ratio } from '../../lib/cf-images';
 
 const [photos, heroPhotoId] = await Promise.all([getPhotos('boudoir'), getHero('boudoir')]);
-
-const ratioDims: Record<Ratio, { width: number; height: number }> = {
-  tall:   { width: 400, height: 533 },
-  wide:   { width: 400, height: 300 },
-  square: { width: 400, height: 400 },
-};
 ---
 
 <Base title="Boudoir — juanr.photo">
@@ -21,7 +17,6 @@ const ratioDims: Record<Ratio, { width: number; height: number }> = {
     <AgeGate />
     <Nav />
 
-    <!-- HERO -->
     <header class="relative h-screen min-h-[600px] grid place-items-center overflow-hidden">
       {heroPhotoId ? (
         <img src={cfImageUrl(heroPhotoId, 'hero')} srcset={cfHeroSrcset(heroPhotoId)} sizes="100vw" alt="boudoir hero image" class="absolute inset-0 w-full h-full object-cover" loading="eager" decoding="async" />
@@ -42,38 +37,10 @@ const ratioDims: Record<Ratio, { width: number; height: number }> = {
       </div>
     </header>
 
-    <!-- GALLERY GRID -->
-    <section class="py-20 pb-24 w-full max-w-295 2xl:max-w-350 3xl:max-w-400 mx-auto px-8">
-      {photos.length > 0 ? (
-        <div class="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 2xl:columns-5 3xl:columns-6 gap-4.5">
-          {photos.map((photo) => (
-            <div class="break-inside-avoid mb-4.5 rounded-[20px] overflow-hidden">
-              <img
-                src={cfImageUrl(photo.id, 'thumbnail')}
-                srcset={cfImageSrcset(photo.id)}
-                sizes="(min-width: 1920px) 17vw, (min-width: 1536px) 20vw, (min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                alt={photo.alt}
-                width={ratioDims[photo.ratio].width}
-                height={ratioDims[photo.ratio].height}
-                loading="lazy"
-                decoding="async"
-                class="w-full block cursor-pointer"
-                transition:name={`photo-${photo.id}`}
-              />
-            </div>
-          ))}
-        </div>
-      ) : (
-        <p class="text-center text-ink-soft font-mono text-[13px] py-20">// coming soon</p>
-      )}
-    </section>
+    <PhotoGrid photos={photos} />
 
-    <!-- FOOTER -->
-    <footer class="border-t border-line">
-      <div class="w-full max-w-295 2xl:max-w-350 3xl:max-w-400 mx-auto px-8 py-11 flex items-center justify-between flex-wrap gap-3.5 font-mono text-[12.5px] text-ink-soft">
-        <span class="font-display font-semibold text-[18px] text-ink">juanr.photo</span>
-        <span>Juan R. - Made with love</span>
-      </div>
-    </footer>
+    <Lightbox />
+
+    <Footer />
   </div>
 </Base>

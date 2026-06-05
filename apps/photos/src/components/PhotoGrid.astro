@@ -1,0 +1,47 @@
+---
+import { cfImageUrl, cfImageSrcset } from '../lib/cf-images';
+import type { Photo, Ratio } from '../lib/cf-images';
+
+interface Props {
+  photos: Photo[];
+  emptyMessage?: string;
+}
+
+const { photos, emptyMessage = '// coming soon' } = Astro.props;
+
+const ratioDims: Record<Ratio, { width: number; height: number }> = {
+  tall:   { width: 400, height: 533 },
+  wide:   { width: 400, height: 300 },
+  square: { width: 400, height: 400 },
+};
+---
+
+<section class="py-20 pb-24 w-full max-w-295 2xl:max-w-350 3xl:max-w-400 mx-auto px-8">
+  <slot name="before-grid" />
+  {photos.length > 0 ? (
+    <div class="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 2xl:columns-5 3xl:columns-6 gap-4.5">
+      {photos.map((photo) => (
+        <div class="break-inside-avoid mb-4.5 rounded-[20px] overflow-hidden">
+          <img
+            src={cfImageUrl(photo.id, 'thumbnail')}
+            srcset={cfImageSrcset(photo.id)}
+            sizes="(min-width: 1920px) 17vw, (min-width: 1536px) 20vw, (min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+            alt={photo.alt}
+            width={ratioDims[photo.ratio].width}
+            height={ratioDims[photo.ratio].height}
+            loading="lazy"
+            decoding="async"
+            class="w-full block cursor-pointer"
+            transition:name={`photo-${photo.id}`}
+            data-lightbox
+            data-lb-src={cfImageUrl(photo.id, 'gallery')}
+            data-lb-alt={photo.alt}
+            data-lb-id={photo.id}
+          />
+        </div>
+      ))}
+    </div>
+  ) : (
+    <p class="text-center text-ink-soft font-mono text-[13px] py-20">{emptyMessage}</p>
+  )}
+</section>

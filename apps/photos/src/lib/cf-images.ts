@@ -1,12 +1,3 @@
-// Cloudflare Images URL builder.
-//
-// Account hash lives in PUBLIC_CF_IMAGES_ACCOUNT_HASH (embedded at build time).
-// Image IDs come from photos.json — obtained when you upload via the CF dashboard
-// or API.  Variants are defined once in your CF Images settings; the names below
-// must match what you create there.
-//
-// URL shape: https://imagedelivery.net/<accountHash>/<imageId>/<variant>
-
 const ACCOUNT_HASH = import.meta.env.PUBLIC_CF_IMAGES_ACCOUNT_HASH ?? '';
 
 export type Ratio = 'tall' | 'wide' | 'square';
