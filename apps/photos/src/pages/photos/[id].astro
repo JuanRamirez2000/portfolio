@@ -120,11 +120,17 @@ const ogImage = cfImageUrl(photo.id, 'gallery');
 </Base>
 
 <script>
-  const prevEl = document.getElementById('lb-page-prev') as HTMLAnchorElement | null;
-  const nextEl = document.getElementById('lb-page-next') as HTMLAnchorElement | null;
+  document.addEventListener('astro:page-load', () => {
+    const prevEl = document.getElementById('lb-page-prev') as HTMLAnchorElement | null;
+    const nextEl = document.getElementById('lb-page-next') as HTMLAnchorElement | null;
 
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowLeft'  && prevEl) prevEl.click();
-    if (e.key === 'ArrowRight' && nextEl) nextEl.click();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft'  && prevEl) prevEl.click();
+      if (e.key === 'ArrowRight' && nextEl) nextEl.click();
+    };
+    document.addEventListener('keydown', onKey);
+    document.addEventListener('astro:before-swap', () => {
+      document.removeEventListener('keydown', onKey);
+    }, { once: true });
   });
 </script>
