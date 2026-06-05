@@ -19,7 +19,7 @@ const ratioDims: Record<Ratio, { width: number; height: number }> = {
   <div class="bg-bg font-sans text-ink antialiased">
 
     <AgeGate />
-    <Nav />
+    <Nav transition:persist />
 
     <!-- HERO -->
     <header class="relative h-screen min-h-[600px] grid place-items-center overflow-hidden">
@@ -57,7 +57,8 @@ const ratioDims: Record<Ratio, { width: number; height: number }> = {
                 height={ratioDims[photo.ratio].height}
                 loading="lazy"
                 decoding="async"
-                class="w-full block"
+                class="w-full block cursor-pointer"
+                transition:name={`photo-${photo.id}`}
               />
             </div>
           ))}

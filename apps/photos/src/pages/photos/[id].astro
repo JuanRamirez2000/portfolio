@@ -3,16 +3,27 @@ import Base from '../../layouts/Base.astro';
 import Nav from '../../components/Nav.astro';
 import { getPhotos } from '../../lib/api';
 import { cfImageUrl, cfImageSrcset } from '../../lib/cf-images';
+import type { Photo } from '../../lib/cf-images';
 
 export async function getStaticPaths() {
   const photos = await getPhotos();
-  return photos.map((photo) => ({
+  return photos.map((photo, idx) => ({
     params: { id: photo.id },
-    props: { photo },
+    props: {
+      photo,
+      prev: photos[idx - 1] ?? null,
+      next: photos[idx + 1] ?? null,
+    },
   }));
 }
 
-const { photo } = Astro.props;
+interface Props {
+  photo: Photo;
+  prev: Photo | null;
+  next: Photo | null;
+}
+
+const { photo, prev, next } = Astro.props;
 
 const galleryLabels: Record<string, string> = {
   portraits: 'Portraits',
@@ -35,7 +46,7 @@ const ogImage = cfImageUrl(photo.id, 'gallery');
 
   <div class="relative min-h-screen font-sans antialiased overflow-hidden">
 
-    <!-- Blurred photo background — colors bleed from the image itself -->
+    <!-- Blurred ambient background -->
     <div class="absolute inset-0 z-0">
       <img
         src={cfImageUrl(photo.id, 'gallery')}
@@ -48,7 +59,7 @@ const ogImage = cfImageUrl(photo.id, 'gallery');
     </div>
 
     <div class="relative z-10">
-      <Nav />
+      <Nav transition:persist />
     </div>
 
     <main class="relative z-10 min-h-screen flex flex-col items-center justify-center px-6 pt-20 pb-16">
@@ -57,11 +68,13 @@ const ogImage = cfImageUrl(photo.id, 'gallery');
         srcset={cfImageSrcset(photo.id)}
         sizes="(min-width: 1024px) 70vw, 90vw"
         alt={photo.alt}
+        transition:name={`photo-${photo.id}`}
         class="max-h-[78vh] max-w-full object-contain rounded-2xl shadow-[0_40px_120px_-16px_oklch(0_0_0/0.6)]"
         loading="eager"
         decoding="async"
       />
 
+      <!-- Metadata -->
       <div class="mt-8 text-center">
         <h1 class="font-display font-medium text-[26px] text-white tracking-[-0.01em] [text-shadow:0_2px_16px_oklch(0_0_0/0.4)]">
           {photo.title}
@@ -78,6 +91,40 @@ const ogImage = cfImageUrl(photo.id, 'gallery');
           <span class="font-mono text-[11.5px] text-white/50">{photo.year}</span>
         </div>
       </div>
+
+      <!-- Prev / Next -->
+      <div class="mt-10 flex items-center gap-4">
+        {prev ? (
+          <a
+            id="lb-page-prev"
+            href={`/photos/${prev.id}`}
+            class="flex items-center gap-2 font-mono text-[12px] text-white/70 bg-white/10 hover:bg-white/18 border border-white/20 rounded-full px-4 py-2.5 transition-colors no-underline backdrop-blur-sm"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+            prev
+          </a>
+        ) : <span />}
+        {next ? (
+          <a
+            id="lb-page-next"
+            href={`/photos/${next.id}`}
+            class="flex items-center gap-2 font-mono text-[12px] text-white/70 bg-white/10 hover:bg-white/18 border border-white/20 rounded-full px-4 py-2.5 transition-colors no-underline backdrop-blur-sm"
+          >
+            next
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+          </a>
+        ) : <span />}
+      </div>
     </main>
   </div>
 </Base>
+
+<script>
+  const prevEl = document.getElementById('lb-page-prev') as HTMLAnchorElement | null;
+  const nextEl = document.getElementById('lb-page-next') as HTMLAnchorElement | null;
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft'  && prevEl) prevEl.click();
+    if (e.key === 'ArrowRight' && nextEl) nextEl.click();
+  });
+</script>

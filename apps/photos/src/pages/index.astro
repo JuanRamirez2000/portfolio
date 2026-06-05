@@ -13,7 +13,7 @@ const [featuredPhotos, heroPhotoId] = await Promise.all([
 
 <Base title="juanr.photo — Photography by Juan R.">
   <div class="bg-bg font-sans text-ink antialiased">
-    <Nav />
+    <Nav transition:persist />
 
     <!-- HERO -->
     <header
@@ -88,6 +88,7 @@ const [featuredPhotos, heroPhotoId] = await Promise.all([
                   loading="lazy"
                   decoding="async"
                   class="w-full h-auto block cursor-pointer"
+                  transition:name={`photo-${photo.id}`}
                   data-lightbox
                   data-lb-src={cfImageUrl(photo.id, "gallery")}
                   data-lb-alt={photo.alt}

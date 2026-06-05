@@ -12,14 +12,36 @@
 >
   <div id="lb-backdrop" class="absolute inset-0 bg-black/90 cursor-pointer"></div>
 
+  <!-- Prev -->
+  <button
+    id="lb-prev"
+    aria-label="Previous photo"
+    class="absolute left-3 sm:left-5 top-1/2 -translate-y-1/2 z-20 flex items-center justify-center w-10 h-10 bg-white/12 hover:bg-white/22 border border-white/20 text-white rounded-full transition-colors duration-150 backdrop-blur-sm disabled:opacity-20 disabled:pointer-events-none"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <polyline points="15 18 9 12 15 6"/>
+    </svg>
+  </button>
+
   <img
     id="lb-img"
     src=""
     alt=""
-    class="relative z-10 max-w-[92vw] max-h-[90vh] object-contain rounded-2xl shadow-[0_32px_80px_-12px_oklch(0_0_0/0.7)]"
+    class="relative z-10 max-w-[80vw] max-h-[88vh] object-contain rounded-2xl shadow-[0_32px_80px_-12px_oklch(0_0_0/0.7)]"
   />
 
-  <!-- Controls -->
+  <!-- Next -->
+  <button
+    id="lb-next"
+    aria-label="Next photo"
+    class="absolute right-3 sm:right-5 top-1/2 -translate-y-1/2 z-20 flex items-center justify-center w-10 h-10 bg-white/12 hover:bg-white/22 border border-white/20 text-white rounded-full transition-colors duration-150 backdrop-blur-sm disabled:opacity-20 disabled:pointer-events-none"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <polyline points="9 18 15 12 9 6"/>
+    </svg>
+  </button>
+
+  <!-- Controls top-right -->
   <div class="absolute top-5 right-5 z-20 flex gap-2">
     <button
       id="lb-copy"
@@ -44,10 +66,16 @@
     </button>
   </div>
 
+  <!-- Counter -->
+  <div
+    id="lb-counter"
+    class="absolute bottom-5 left-1/2 -translate-x-1/2 z-20 font-mono text-[11px] text-white/45 pointer-events-none"
+  ></div>
+
   <!-- Toast -->
   <div
     id="lb-toast"
-    class="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 bg-surface border border-line text-ink text-[12.5px] font-mono px-4 py-2.5 rounded-full shadow-lg hidden pointer-events-none"
+    class="absolute bottom-12 left-1/2 -translate-x-1/2 z-20 bg-surface border border-line text-ink text-[12.5px] font-mono px-4 py-2.5 rounded-full shadow-lg hidden pointer-events-none"
   >
     link copied ✓
   </div>
@@ -57,18 +85,38 @@
   const lb       = document.getElementById('lightbox')!;
   const lbImg    = document.getElementById('lb-img') as HTMLImageElement;
   const backdrop = document.getElementById('lb-backdrop')!;
+  const prevBtn  = document.getElementById('lb-prev') as HTMLButtonElement;
+  const nextBtn  = document.getElementById('lb-next') as HTMLButtonElement;
   const closeBtn = document.getElementById('lb-close')!;
   const copyBtn  = document.getElementById('lb-copy')!;
+  const counter  = document.getElementById('lb-counter')!;
   const toast    = document.getElementById('lb-toast')!;
 
-  let currentId = '';
+  let currentIdx = 0;
+  let currentId  = '';
 
-  function open(src: string, alt: string, id: string) {
-    lbImg.src = src;
-    lbImg.alt = alt;
-    currentId = id;
+  function getAll() {
+    return Array.from(document.querySelectorAll('[data-lightbox]'));
+  }
+
+  function updateControls() {
+    const all = getAll();
+    prevBtn.disabled = currentIdx === 0;
+    nextBtn.disabled = currentIdx === all.length - 1;
+    counter.textContent = all.length > 1 ? `${currentIdx + 1} / ${all.length}` : '';
+  }
+
+  function openIdx(idx: number) {
+    const all = getAll();
+    if (idx < 0 || idx >= all.length) return;
+    currentIdx = idx;
+    const el = all[idx];
+    currentId  = el.getAttribute('data-lb-id') ?? '';
+    lbImg.src  = el.getAttribute('data-lb-src') ?? '';
+    lbImg.alt  = el.getAttribute('data-lb-alt') ?? '';
     lb.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
+    updateControls();
   }
 
   function close() {
@@ -78,21 +126,25 @@
     document.body.style.overflow = '';
   }
 
+  // Open on any [data-lightbox] click
   document.addEventListener('click', (e) => {
     const el = (e.target as Element).closest('[data-lightbox]');
     if (!el) return;
-    open(
-      el.getAttribute('data-lb-src') ?? '',
-      el.getAttribute('data-lb-alt') ?? '',
-      el.getAttribute('data-lb-id') ?? '',
-    );
+    const all = getAll();
+    const idx = all.indexOf(el);
+    openIdx(idx >= 0 ? idx : 0);
   });
 
+  prevBtn.addEventListener('click', () => openIdx(currentIdx - 1));
+  nextBtn.addEventListener('click', () => openIdx(currentIdx + 1));
   backdrop.addEventListener('click', close);
   closeBtn.addEventListener('click', close);
 
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && !lb.classList.contains('hidden')) close();
+    if (lb.classList.contains('hidden')) return;
+    if (e.key === 'Escape')      close();
+    if (e.key === 'ArrowLeft')   openIdx(currentIdx - 1);
+    if (e.key === 'ArrowRight')  openIdx(currentIdx + 1);
   });
 
   copyBtn.addEventListener('click', async () => {
