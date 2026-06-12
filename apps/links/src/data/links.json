@@ -9,14 +9,14 @@
   {
     "label": "Photography",
     "sublabel": "my pics",
-    "href": "https://juanr.photos",
+    "href": "https://juanr.photo",
     "kind": "social",
     "platform": "camera"
   },
   {
     "label": "Photography Instagram",
-    "sublabel": "@juanr.photos",
-    "href": "https://instagram.com/yourhandle",
+    "sublabel": "@juan_r_photos",
+    "href": "https://www.instagram.com/juan_r_photos/",
     "kind": "social",
     "platform": "instagram"
   },
@@ -30,7 +30,7 @@
   {
     "label": "LinkedIn",
     "sublabel": "juanramirez2000",
-    "href": "https://linkedin.com/in/juanramirez2000/",
+    "href": "https://www.linkedin.com/in/juanramirez2000/",
     "kind": "social",
     "platform": "linkedin"
   },
