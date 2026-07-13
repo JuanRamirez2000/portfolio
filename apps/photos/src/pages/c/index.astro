@@ -1,0 +1,200 @@
+---
+import Base from '../../layouts/Base.astro';
+const WORKER_URL = import.meta.env.PUBLIC_WORKER_URL;
+const ACCOUNT_HASH = import.meta.env.PUBLIC_CF_IMAGES_ACCOUNT_HASH;
+---
+
+<Base title="Client Gallery">
+  <div id="app" class="min-h-screen bg-bg font-sans text-ink antialiased">
+    <!-- Password gate -->
+    <div id="gate" class="min-h-screen flex items-center justify-center p-6">
+      <div class="w-full max-w-sm space-y-6">
+        <div class="text-center space-y-1.5">
+          <p class="font-mono text-[11px] tracking-[0.18em] uppercase text-ink-soft">Private Gallery</p>
+          <h1 id="gallery-name" class="font-display text-3xl font-medium text-ink">Loading…</h1>
+        </div>
+        <div class="bg-surface border border-line rounded-2xl shadow-card p-6 space-y-4">
+          <form id="password-form" class="space-y-3">
+            <input
+              id="password-input"
+              type="password"
+              placeholder="Enter your password"
+              class="w-full bg-bg text-ink placeholder-ink-soft/60 border border-line rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-ink-soft transition-colors"
+              autocomplete="current-password"
+            />
+            <p id="gate-error" class="text-warn-text text-sm hidden">Wrong password — try again.</p>
+            <button
+              type="submit"
+              class="w-full bg-ink text-surface rounded-xl py-2.5 text-sm font-medium hover:bg-ink/90 transition-colors"
+            >
+              View photos
+            </button>
+          </form>
+        </div>
+        <p class="text-center text-ink-soft/60 text-xs font-mono">juanr.photo</p>
+      </div>
+    </div>
+
+    <!-- Gallery view (hidden until unlocked) -->
+    <div id="gallery-view" class="hidden">
+      <header class="sticky top-0 z-20 bg-bg/90 backdrop-blur-sm border-b border-line px-6 h-14 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <a href="/" class="font-display font-semibold text-[18px] text-ink no-underline">juanr.photo</a>
+          <span class="text-line text-lg">/</span>
+          <h1 id="gallery-view-name" class="text-sm font-medium text-ink-soft"></h1>
+        </div>
+        <span id="photo-count" class="text-ink-soft text-xs font-mono"></span>
+      </header>
+
+      <div class="p-6">
+        <div id="photo-grid" class="columns-2 sm:columns-3 md:columns-4 lg:columns-5 gap-3 space-y-3"></div>
+      </div>
+
+      <!-- Lightbox -->
+      <div id="lightbox" class="fixed inset-0 bg-ink/95 z-50 hidden flex-col">
+        <div class="flex items-center justify-between px-5 py-3 shrink-0">
+          <span id="lb-counter" class="text-surface/50 text-xs font-mono"></span>
+          <div class="flex gap-3">
+            <button id="lb-download" class="text-xs bg-surface text-ink px-4 py-1.5 rounded-lg font-medium hover:bg-surface-2 transition-colors">
+              Download
+            </button>
+            <button id="lb-close" class="text-surface/60 hover:text-surface text-2xl leading-none">✕</button>
+          </div>
+        </div>
+        <div class="flex-1 flex items-center justify-center relative min-h-0 px-12">
+          <button id="lb-prev" class="absolute left-3 text-surface/50 hover:text-surface text-3xl px-2">‹</button>
+          <img id="lb-img" src="" alt="" class="max-w-full max-h-full object-contain" />
+          <button id="lb-next" class="absolute right-3 text-surface/50 hover:text-surface text-3xl px-2">›</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</Base>
+
+<script define:vars={{ WORKER_URL, ACCOUNT_HASH }} is:inline>
+  function cfUrl(id, variant) {
+    return `https://imagedelivery.net/${ACCOUNT_HASH}/${id}/${variant}`;
+  }
+
+  function getSlug() {
+    const parts = window.location.pathname.split('/').filter(Boolean);
+    if (parts.length >= 2 && parts[0] === 'c') return parts[1];
+    return new URLSearchParams(window.location.search).get('g') ?? '';
+  }
+
+  const slug = getSlug();
+  const tokenKey = `cg_token_${slug}`;
+
+  let photos = [];
+  let lbIndex = 0;
+
+  document.getElementById('gallery-name').textContent =
+    slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+
+  const savedToken = localStorage.getItem(tokenKey);
+  if (savedToken) loadGallery(savedToken);
+
+  document.getElementById('password-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const password = document.getElementById('password-input').value;
+    const errEl = document.getElementById('gate-error');
+    errEl.classList.add('hidden');
+
+    const res = await fetch(`${WORKER_URL}/client-galleries/${slug}/verify`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password }),
+    });
+
+    if (!res.ok) { errEl.classList.remove('hidden'); return; }
+    const { token } = await res.json();
+    localStorage.setItem(tokenKey, token);
+    loadGallery(token);
+  });
+
+  async function loadGallery(token) {
+    const res = await fetch(`${WORKER_URL}/client-galleries/${slug}/photos`, {
+      headers: { 'X-Gallery-Token': token },
+    });
+
+    if (!res.ok) {
+      localStorage.removeItem(tokenKey);
+      return;
+    }
+
+    const data = await res.json();
+    photos = data.photos;
+
+    document.getElementById('gallery-name').textContent = data.gallery.name;
+    document.getElementById('gallery-view-name').textContent = data.gallery.name;
+    document.getElementById('photo-count').textContent = `${photos.length} photo${photos.length !== 1 ? 's' : ''}`;
+
+    document.getElementById('gate').classList.add('hidden');
+    document.getElementById('gallery-view').classList.remove('hidden');
+
+    renderGrid();
+  }
+
+  function renderGrid() {
+    const grid = document.getElementById('photo-grid');
+    grid.innerHTML = '';
+    photos.forEach((photo, i) => {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'relative group cursor-pointer break-inside-avoid mb-3 rounded-xl overflow-hidden bg-surface-2';
+      const img = document.createElement('img');
+      img.src = cfUrl(photo.id, 'thumbnail');
+      img.alt = photo.filename;
+      img.loading = 'lazy';
+      img.className = 'w-full block transition-transform duration-300 group-hover:scale-[1.02]';
+      wrapper.appendChild(img);
+      wrapper.addEventListener('click', () => openLightbox(i));
+      grid.appendChild(wrapper);
+    });
+  }
+
+  function openLightbox(index) {
+    lbIndex = index;
+    document.getElementById('lightbox').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    showLightboxPhoto();
+  }
+
+  function closeLightbox() {
+    document.getElementById('lightbox').style.display = 'none';
+    document.body.style.overflow = '';
+  }
+
+  function showLightboxPhoto() {
+    const photo = photos[lbIndex];
+    document.getElementById('lb-img').src = cfUrl(photo.id, 'gallery');
+    document.getElementById('lb-counter').textContent = `${lbIndex + 1} / ${photos.length}`;
+  }
+
+  document.getElementById('lb-close').addEventListener('click', closeLightbox);
+  document.getElementById('lb-prev').addEventListener('click', () => {
+    lbIndex = (lbIndex - 1 + photos.length) % photos.length;
+    showLightboxPhoto();
+  });
+  document.getElementById('lb-next').addEventListener('click', () => {
+    lbIndex = (lbIndex + 1) % photos.length;
+    showLightboxPhoto();
+  });
+
+  document.addEventListener('keydown', e => {
+    if (document.getElementById('lightbox').style.display !== 'flex') return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft') { lbIndex = (lbIndex - 1 + photos.length) % photos.length; showLightboxPhoto(); }
+    if (e.key === 'ArrowRight') { lbIndex = (lbIndex + 1) % photos.length; showLightboxPhoto(); }
+  });
+
+  document.getElementById('lb-download').addEventListener('click', async () => {
+    const photo = photos[lbIndex];
+    const url = cfUrl(photo.id, 'public');
+    const res = await fetch(url);
+    const blob = await res.blob();
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = photo.filename;
+    a.click();
+  });
+</script>

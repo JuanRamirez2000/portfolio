@@ -13,8 +13,6 @@
   },
   "packageManager": "npm@11.12.1",
   "devDependencies": {
-    "chokidar": "^5.0.0",
-    "image-size": "^2.0.2",
     "turbo": "^2.0.0"
   }
 }
