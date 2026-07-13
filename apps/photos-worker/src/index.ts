@@ -290,8 +290,12 @@ async function handleCreateClientGallery(request: Request, env: Env, origin: str
     await env.DB.prepare(
       `INSERT INTO client_galleries (id, name, password_hash) VALUES (?, ?, ?)`
     ).bind(id, name, password_hash).run();
-  } catch {
-    return json({ error: 'Gallery ID already exists' }, env, origin, 409);
+  } catch (err) {
+    const msg = String(err);
+    if (msg.includes('UNIQUE') || msg.includes('already exists')) {
+      return json({ error: `The slug "${id}" is already taken — try a different one.` }, env, origin, 409);
+    }
+    return json({ error: 'Failed to create gallery' }, env, origin, 500);
   }
   return json({ id, name }, env, origin, 201);
 }

@@ -34,6 +34,17 @@ async function checkAuth(res: Response): Promise<Response> {
   return res;
 }
 
+async function throwIfError(res: Response): Promise<void> {
+  if (res.ok) return;
+  const text = await res.text();
+  try {
+    const json = JSON.parse(text);
+    throw new Error(json.error ?? text);
+  } catch {
+    throw new Error(text);
+  }
+}
+
 export async function getPhotos(): Promise<Photo[]> {
   const res = await fetch(`${WORKER_URL}/photos`);
   if (!res.ok) throw new Error('Failed to fetch photos');
@@ -138,10 +149,10 @@ export async function createClientGallery(id: string, name: string, password: st
     await fetch(`${WORKER_URL}/client-galleries`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', ...authHeaders() },
-      body: JSON.stringify({ id, name, password }),
+      body: JSON.stringify({ id, name, password: password || undefined }),
     })
   );
-  if (!res.ok) throw new Error(await res.text());
+  await throwIfError(res);
   return res.json();
 }
 
@@ -192,7 +203,7 @@ export async function updateClientGallery(id: string, updates: { name?: string; 
       body: JSON.stringify(updates),
     })
   );
-  if (!res.ok) throw new Error(await res.text());
+  await throwIfError(res);
   return res.json();
 }
 
