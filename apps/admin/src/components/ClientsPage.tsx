@@ -173,20 +173,20 @@ export function ClientsPage() {
                 </div>
               </div>
               <div>
-                <label className="block text-xs text-neutral-400 mb-1">Password</label>
+                <label className="block text-xs text-neutral-400 mb-1">Password <span className="text-neutral-600">(optional)</span></label>
                 <input
                   type="text"
-                  placeholder="e.g. sunshine2024"
+                  placeholder="Leave blank for a public link"
                   value={form.password}
                   onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
                   className="w-full bg-neutral-900 text-white placeholder-neutral-600 border border-neutral-800 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-neutral-600"
                 />
-                <p className="text-neutral-600 text-xs mt-1">Share this with your client so they can access the gallery.</p>
+                <p className="text-neutral-600 text-xs mt-1">If set, the client must enter this to view the gallery.</p>
               </div>
               {error && <p className="text-red-400 text-sm">{error}</p>}
               <div className="flex gap-3 pt-1">
                 <button type="button" onClick={() => setCreating(false)} className="flex-1 bg-neutral-900 text-neutral-300 rounded-lg py-2.5 text-sm hover:bg-neutral-800 transition-colors">Cancel</button>
-                <button type="submit" disabled={!form.id || !form.name || !form.password || saving} className="flex-1 bg-white text-black rounded-lg py-2.5 text-sm font-medium disabled:opacity-40 hover:bg-neutral-200 transition-colors">
+                <button type="submit" disabled={!form.id || !form.name || saving} className="flex-1 bg-white text-black rounded-lg py-2.5 text-sm font-medium disabled:opacity-40 hover:bg-neutral-200 transition-colors">
                   {saving ? 'Creating…' : 'Create gallery'}
                 </button>
               </div>

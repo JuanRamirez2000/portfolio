@@ -184,7 +184,7 @@ export async function getClientPhotos(galleryId: string): Promise<{ gallery: Cli
   return res.json();
 }
 
-export async function updateClientGallery(id: string, updates: { name?: string; password?: string; newId?: string }): Promise<{ id: string }> {
+export async function updateClientGallery(id: string, updates: { name?: string; password?: string | null; newId?: string }): Promise<{ id: string }> {
   const res = await checkAuth(
     await fetch(`${WORKER_URL}/client-galleries/${id}`, {
       method: 'PATCH',

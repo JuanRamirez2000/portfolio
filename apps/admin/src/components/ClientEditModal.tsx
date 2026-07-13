@@ -16,6 +16,7 @@ export function ClientEditModal({ gallery, onClose, onSaved }: Props) {
   const [name, setName] = useState(gallery.name);
   const [slug, setSlug] = useState(gallery.id);
   const [password, setPassword] = useState('');
+  const [removePassword, setRemovePassword] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
 
@@ -24,9 +25,10 @@ export function ClientEditModal({ gallery, onClose, onSaved }: Props) {
     setSaving(true);
     setError('');
     try {
-      const updates: { name?: string; password?: string; newId?: string } = {};
+      const updates: { name?: string; password?: string | null; newId?: string } = {};
       if (name !== gallery.name) updates.name = name;
-      if (password) updates.password = password;
+      if (removePassword) updates.password = null;
+      else if (password) updates.password = password;
       if (slug !== gallery.id) updates.newId = slug;
       const result = await updateClientGallery(gallery.id, updates);
       onSaved({ ...gallery, name, id: result.id });
@@ -70,14 +72,27 @@ export function ClientEditModal({ gallery, onClose, onSaved }: Props) {
             )}
           </div>
           <div>
-            <label className="block text-xs text-neutral-400 mb-1">New password <span className="text-neutral-600">(leave blank to keep current)</span></label>
-            <input
-              type="text"
-              placeholder="Enter new password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              className="w-full bg-neutral-900 text-white placeholder-neutral-600 border border-neutral-800 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-neutral-600"
-            />
+            <label className="block text-xs text-neutral-400 mb-1">Password</label>
+            {!removePassword ? (
+              <input
+                type="text"
+                placeholder="Enter new password (blank = keep current)"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                className="w-full bg-neutral-900 text-white placeholder-neutral-600 border border-neutral-800 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-neutral-600"
+              />
+            ) : (
+              <p className="text-neutral-500 text-sm py-2">Password will be removed — gallery becomes public.</p>
+            )}
+            <label className="flex items-center gap-2 mt-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={removePassword}
+                onChange={e => { setRemovePassword(e.target.checked); setPassword(''); }}
+                className="rounded"
+              />
+              <span className="text-xs text-neutral-500">Make gallery public (no password)</span>
+            </label>
           </div>
           {error && <p className="text-red-400 text-sm">{error}</p>}
           <div className="flex gap-3 pt-1">

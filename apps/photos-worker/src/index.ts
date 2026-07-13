@@ -282,10 +282,10 @@ async function handleListClientGalleries(request: Request, env: Env, origin: str
 // POST /client-galleries — create gallery (admin only)
 async function handleCreateClientGallery(request: Request, env: Env, origin: string | null): Promise<Response> {
   if (!isAuthorized(request, env)) return unauthorized(env, origin);
-  const { id, name, password } = await request.json<{ id: string; name: string; password: string }>();
-  if (!id || !name || !password) return json({ error: 'id, name, and password required' }, env, origin, 400);
+  const { id, name, password } = await request.json<{ id: string; name: string; password?: string }>();
+  if (!id || !name) return json({ error: 'id and name required' }, env, origin, 400);
   if (!/^[a-z0-9-]+$/.test(id)) return json({ error: 'id must be lowercase letters, numbers, hyphens only' }, env, origin, 400);
-  const password_hash = await sha256Hex(password);
+  const password_hash = password ? await sha256Hex(password) : null;
   try {
     await env.DB.prepare(
       `INSERT INTO client_galleries (id, name, password_hash) VALUES (?, ?, ?)`
@@ -342,27 +342,37 @@ async function handleDeleteClientPhoto(galleryId: string, photoId: string, reque
 
 // POST /client-galleries/:id/verify — verify password, return gallery token (public)
 async function handleVerifyClientGallery(id: string, request: Request, env: Env, origin: string | null): Promise<Response> {
-  const { password } = await request.json<{ password: string }>();
-  const row = await env.DB.prepare(`SELECT password_hash FROM client_galleries WHERE id = ?`).bind(id).first<{ password_hash: string }>();
+  const row = await env.DB.prepare(`SELECT password_hash FROM client_galleries WHERE id = ?`).bind(id).first<{ password_hash: string | null }>();
   if (!row) return json({ error: 'Not found' }, env, origin, 404);
+  if (!row.password_hash) {
+    // Public gallery — no password needed
+    const token = await makeGalleryToken(id, env.UPLOAD_SECRET);
+    return json({ token }, env, origin);
+  }
+  const { password } = await request.json<{ password: string }>();
   const hash = await sha256Hex(password ?? '');
   if (hash !== row.password_hash) return json({ error: 'Wrong password' }, env, origin, 401);
   const token = await makeGalleryToken(id, env.UPLOAD_SECRET);
   return json({ token }, env, origin);
 }
 
-// GET /client-galleries/:id/photos — get photos (admin auth OR gallery token)
+// GET /client-galleries/:id/photos — get photos (public if no password, else admin auth OR gallery token)
 async function handleGetClientPhotos(id: string, request: Request, env: Env, origin: string | null): Promise<Response> {
-  const adminAuth = isAuthorized(request, env);
-  const token = getGalleryToken(request);
-  if (!adminAuth && (!token || !(await verifyGalleryToken(id, token, env.UPLOAD_SECRET)))) {
-    return unauthorized(env, origin);
-  }
-  const meta = await env.DB.prepare(`SELECT id, name FROM client_galleries WHERE id = ?`).bind(id).first<{ id: string; name: string }>();
+  const meta = await env.DB.prepare(`SELECT id, name, password_hash FROM client_galleries WHERE id = ?`).bind(id).first<{ id: string; name: string; password_hash: string | null }>();
   if (!meta) return json({ error: 'Not found' }, env, origin, 404);
+
+  if (meta.password_hash) {
+    // Password-protected — require admin auth or valid gallery token
+    const adminAuth = isAuthorized(request, env);
+    const token = getGalleryToken(request);
+    if (!adminAuth && (!token || !(await verifyGalleryToken(id, token, env.UPLOAD_SECRET)))) {
+      return unauthorized(env, origin);
+    }
+  }
+
   const { results } = await env.DB.prepare(`SELECT id, filename, uploaded_at FROM client_photos WHERE gallery_id = ? ORDER BY uploaded_at DESC`)
     .bind(id).all<{ id: string; filename: string; uploaded_at: string }>();
-  return json({ gallery: meta, photos: results }, env, origin);
+  return json({ gallery: { id: meta.id, name: meta.name }, photos: results }, env, origin);
 }
 
 // PATCH /client-galleries/:id — update name, password, and/or rename slug (admin only)
@@ -393,8 +403,8 @@ async function handleUpdateClientGallery(id: string, request: Request, env: Env,
   if (body.name) {
     statements.push(env.DB.prepare(`UPDATE client_galleries SET name = ? WHERE id = ?`).bind(body.name, newId !== id ? newId : id));
   }
-  if (body.password) {
-    const hash = await sha256Hex(body.password);
+  if (body.password !== undefined) {
+    const hash = body.password ? await sha256Hex(body.password) : null;
     statements.push(env.DB.prepare(`UPDATE client_galleries SET password_hash = ? WHERE id = ?`).bind(hash, newId !== id ? newId : id));
   }
 

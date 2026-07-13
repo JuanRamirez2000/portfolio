@@ -91,8 +91,23 @@ const ACCOUNT_HASH = import.meta.env.PUBLIC_CF_IMAGES_ACCOUNT_HASH;
   document.getElementById('gallery-name').textContent =
     slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
 
-  const savedToken = localStorage.getItem(tokenKey);
-  if (savedToken) loadGallery(savedToken);
+  // Try to load: first with saved token, then unauthenticated (public gallery), then show gate
+  async function tryLoad() {
+    const savedToken = localStorage.getItem(tokenKey);
+    if (savedToken) {
+      const ok = await loadGallery(savedToken);
+      if (ok) return;
+    }
+    // Try without auth — succeeds for public (no-password) galleries
+    const ok = await loadGallery(null);
+    if (!ok) {
+      document.getElementById('gate').classList.remove('hidden');
+    }
+  }
+
+  // Hide gate initially while we check
+  document.getElementById('gate').classList.add('hidden');
+  tryLoad();
 
   document.getElementById('password-form').addEventListener('submit', async e => {
     e.preventDefault();
@@ -112,14 +127,14 @@ const ACCOUNT_HASH = import.meta.env.PUBLIC_CF_IMAGES_ACCOUNT_HASH;
     loadGallery(token);
   });
 
+  // Returns true if load succeeded, false if auth failed
   async function loadGallery(token) {
-    const res = await fetch(`${WORKER_URL}/client-galleries/${slug}/photos`, {
-      headers: { 'X-Gallery-Token': token },
-    });
+    const headers = token ? { 'X-Gallery-Token': token } : {};
+    const res = await fetch(`${WORKER_URL}/client-galleries/${slug}/photos`, { headers });
 
     if (!res.ok) {
-      localStorage.removeItem(tokenKey);
-      return;
+      if (token) localStorage.removeItem(tokenKey);
+      return false;
     }
 
     const data = await res.json();
@@ -133,23 +148,52 @@ const ACCOUNT_HASH = import.meta.env.PUBLIC_CF_IMAGES_ACCOUNT_HASH;
     document.getElementById('gallery-view').classList.remove('hidden');
 
     renderGrid();
+    return true;
+  }
+
+  async function downloadPhoto(photo) {
+    const res = await fetch(cfUrl(photo.id, 'public'));
+    const blob = await res.blob();
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = photo.filename;
+    a.click();
+  }
+
+  function createPhotoCard(photo, index) {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'relative group cursor-pointer break-inside-avoid mb-3 rounded-xl overflow-hidden bg-surface-2';
+
+    const img = document.createElement('img');
+    img.src = cfUrl(photo.id, 'thumbnail');
+    img.alt = photo.filename;
+    img.loading = 'lazy';
+    img.className = 'w-full block transition-transform duration-300 group-hover:scale-[1.02]';
+    wrapper.appendChild(img);
+
+    // Download button overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-end p-2';
+
+    const dlBtn = document.createElement('button');
+    dlBtn.className = 'bg-surface/90 hover:bg-surface text-ink text-xs font-medium px-3 py-1.5 rounded-lg shadow transition-colors';
+    dlBtn.textContent = 'Download';
+    dlBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      downloadPhoto(photo);
+    });
+
+    overlay.appendChild(dlBtn);
+    wrapper.appendChild(overlay);
+
+    wrapper.addEventListener('click', () => openLightbox(index));
+    return wrapper;
   }
 
   function renderGrid() {
     const grid = document.getElementById('photo-grid');
     grid.innerHTML = '';
-    photos.forEach((photo, i) => {
-      const wrapper = document.createElement('div');
-      wrapper.className = 'relative group cursor-pointer break-inside-avoid mb-3 rounded-xl overflow-hidden bg-surface-2';
-      const img = document.createElement('img');
-      img.src = cfUrl(photo.id, 'thumbnail');
-      img.alt = photo.filename;
-      img.loading = 'lazy';
-      img.className = 'w-full block transition-transform duration-300 group-hover:scale-[1.02]';
-      wrapper.appendChild(img);
-      wrapper.addEventListener('click', () => openLightbox(i));
-      grid.appendChild(wrapper);
-    });
+    photos.forEach((photo, i) => grid.appendChild(createPhotoCard(photo, i)));
   }
 
   function openLightbox(index) {
@@ -187,14 +231,5 @@ const ACCOUNT_HASH = import.meta.env.PUBLIC_CF_IMAGES_ACCOUNT_HASH;
     if (e.key === 'ArrowRight') { lbIndex = (lbIndex + 1) % photos.length; showLightboxPhoto(); }
   });
 
-  document.getElementById('lb-download').addEventListener('click', async () => {
-    const photo = photos[lbIndex];
-    const url = cfUrl(photo.id, 'public');
-    const res = await fetch(url);
-    const blob = await res.blob();
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = photo.filename;
-    a.click();
-  });
+  document.getElementById('lb-download').addEventListener('click', () => downloadPhoto(photos[lbIndex]));
 </script>
