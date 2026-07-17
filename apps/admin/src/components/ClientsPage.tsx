@@ -57,7 +57,7 @@ export function ClientsPage() {
   }
 
   function copyLink(id: string) {
-    const url = `https://portfolio-photos.pages.dev/c/?g=${id}`;
+    const url = `https://juanr.photos/c/?g=${id}`;
     navigator.clipboard.writeText(url);
     setCopiedId(id);
     setTimeout(() => setCopiedId(null), 2000);

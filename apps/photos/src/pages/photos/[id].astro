@@ -29,9 +29,9 @@ const { photo, prev, next } = Astro.props;
 const ogImage = cfImageUrl(photo.id, 'gallery');
 ---
 
-<Base title={`${photo.title} — juanr.photo`}>
+<Base title={`${photo.title} — juanr.photos`}>
   <Fragment slot="head">
-    <meta property="og:title" content={`${photo.title} — juanr.photo`} />
+    <meta property="og:title" content={`${photo.title} — juanr.photos`} />
     <meta property="og:image" content={ogImage} />
     <meta property="og:type" content="article" />
     <meta name="twitter:card" content="summary_large_image" />

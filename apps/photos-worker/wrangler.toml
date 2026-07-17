@@ -8,4 +8,4 @@ database_name = "portfolio-photos-db"
 database_id = "8d313ffe-045b-4979-8331-48f1b8b700c9"
 
 [vars]
-CORS_ORIGIN = "https://portfolio-photos.pages.dev, https://portfolio-admin-3du.pages.dev"
+CORS_ORIGIN = "https://juanr.photos, https://admin.juanr.photos, https://portfolio-photos.pages.dev, https://portfolio-admin-3du.pages.dev"
