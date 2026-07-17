@@ -130,12 +130,14 @@ export interface ClientGallery {
   name: string;
   created_at: string;
   photo_count: number;
+  cover_photo_id?: string | null;
 }
 
 export interface ClientPhoto {
   id: string;
   filename: string;
   uploaded_at: string;
+  favorited?: boolean;
 }
 
 export async function listClientGalleries(): Promise<ClientGallery[]> {
@@ -195,7 +197,7 @@ export async function getClientPhotos(galleryId: string): Promise<{ gallery: Cli
   return res.json();
 }
 
-export async function updateClientGallery(id: string, updates: { name?: string; password?: string | null; newId?: string }): Promise<{ id: string }> {
+export async function updateClientGallery(id: string, updates: { name?: string; password?: string | null; newId?: string; coverPhotoId?: string | null }): Promise<{ id: string }> {
   const res = await checkAuth(
     await fetch(`${WORKER_URL}/client-galleries/${id}`, {
       method: 'PATCH',
@@ -228,4 +230,8 @@ export async function importToPortfolio(imageId: string, filename: string, meta:
     })
   );
   if (!res.ok) throw new Error(await res.text());
+}
+
+export async function setCoverPhoto(galleryId: string, photoId: string | null): Promise<void> {
+  await updateClientGallery(galleryId, { coverPhotoId: photoId });
 }

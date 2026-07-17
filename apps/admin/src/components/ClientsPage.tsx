@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import type { ClientGallery } from '../lib/api';
 import { listClientGalleries, createClientGallery, deleteClientGallery } from '../lib/api';
+import { cfImageUrl } from '../lib/cf-images';
 import { ClientGalleryDetail } from './ClientGalleryDetail';
 import { ClientEditModal } from './ClientEditModal';
 
@@ -95,6 +96,15 @@ export function ClientsPage() {
       <div className="space-y-2">
         {galleries.map(g => (
           <div key={g.id} className="bg-neutral-900 border border-neutral-800 rounded-xl p-4 flex items-center gap-4">
+            {g.cover_photo_id ? (
+              <img
+                src={cfImageUrl(g.cover_photo_id, 'thumbnail')}
+                alt={g.name}
+                className="w-12 h-12 rounded-lg object-cover shrink-0 bg-neutral-800"
+              />
+            ) : (
+              <div className="w-12 h-12 rounded-lg bg-neutral-800 shrink-0" />
+            )}
             <div className="flex-1 min-w-0">
               <p className="text-white font-medium">{g.name}</p>
               <p className="text-neutral-500 text-sm font-mono">/c/{g.id} · {g.photo_count} photo{g.photo_count !== 1 ? 's' : ''}</p>

@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import type { ClientPhoto, Photo, PhotoMeta } from '../lib/api';
-import { getClientPhotos, uploadClientPhoto, deleteClientPhoto, addFromPortfolio, importToPortfolio, getPhotos } from '../lib/api';
+import { getClientPhotos, uploadClientPhoto, deleteClientPhoto, addFromPortfolio, importToPortfolio, getPhotos, setCoverPhoto } from '../lib/api';
 import { cfImageUrl } from '../lib/cf-images';
 import { MetaForm } from './MetaForm';
+
+const WORKER_URL = import.meta.env.VITE_WORKER_URL ?? '';
 
 interface Props {
   galleryId: string;
@@ -11,6 +13,7 @@ interface Props {
 
 export function ClientGalleryDetail({ galleryId, onBack }: Props) {
   const [galleryName, setGalleryName] = useState('');
+  const [coverPhotoId, setCoverPhotoId] = useState<string | null>(null);
   const [photos, setPhotos] = useState<ClientPhoto[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
@@ -33,7 +36,11 @@ export function ClientGalleryDetail({ galleryId, onBack }: Props) {
 
   useEffect(() => {
     getClientPhotos(galleryId)
-      .then(data => { setGalleryName(data.gallery.name); setPhotos(data.photos); })
+      .then(data => {
+        setGalleryName(data.gallery.name);
+        setCoverPhotoId(data.gallery.cover_photo_id ?? null);
+        setPhotos(data.photos);
+      })
       .finally(() => setLoading(false));
   }, [galleryId]);
 
@@ -64,11 +71,21 @@ export function ClientGalleryDetail({ galleryId, onBack }: Props) {
     try {
       await deleteClientPhoto(galleryId, photo.id);
       setPhotos(prev => prev.filter(p => p.id !== photo.id));
+      if (coverPhotoId === photo.id) {
+        await setCoverPhoto(galleryId, null);
+        setCoverPhotoId(null);
+      }
     } catch (err) {
       alert(`Delete failed: ${err instanceof Error ? err.message : String(err)}`);
     } finally {
       setDeleting(null);
     }
+  }
+
+  async function handleSetCover(photo: ClientPhoto) {
+    const newCover = coverPhotoId === photo.id ? null : photo.id;
+    await setCoverPhoto(galleryId, newCover);
+    setCoverPhotoId(newCover);
   }
 
   async function openPortfolioPicker() {
@@ -93,7 +110,6 @@ export function ClientGalleryDetail({ galleryId, onBack }: Props) {
     setAddingFromPortfolio(true);
     try {
       await addFromPortfolio(galleryId, [...selectedIds]);
-      // Refresh photo list
       const data = await getClientPhotos(galleryId);
       setPhotos(data.photos);
       setShowPortfolioPicker(false);
@@ -118,8 +134,7 @@ export function ClientGalleryDetail({ galleryId, onBack }: Props) {
     }
   }
 
-  // Check which client photos are already in the portfolio
-  const existingIds = new Set(photos.map(p => p.id));
+  const favoriteCount = photos.filter(p => p.favorited).length;
 
   return (
     <div className="p-6 space-y-4">
@@ -127,6 +142,9 @@ export function ClientGalleryDetail({ galleryId, onBack }: Props) {
         <button onClick={onBack} className="text-neutral-500 hover:text-white transition-colors text-sm">← Back</button>
         <h2 className="text-white font-semibold">{galleryName || galleryId}</h2>
         <span className="text-neutral-600 text-sm">{photos.length} photo{photos.length !== 1 ? 's' : ''}</span>
+        {favoriteCount > 0 && (
+          <span className="text-pink-400 text-sm">♥ {favoriteCount} favorite{favoriteCount !== 1 ? 's' : ''}</span>
+        )}
         <button
           onClick={openPortfolioPicker}
           className="ml-auto text-sm bg-neutral-800 hover:bg-neutral-700 text-neutral-300 px-3 py-1.5 rounded-lg transition-colors"
@@ -168,6 +186,18 @@ export function ClientGalleryDetail({ galleryId, onBack }: Props) {
               className="w-full h-full object-cover"
               loading="lazy"
             />
+            {/* Favorite badge — always visible if favorited */}
+            {photo.favorited && (
+              <div className="absolute top-1.5 left-1.5 bg-pink-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center leading-none pointer-events-none">
+                ♥
+              </div>
+            )}
+            {/* Cover badge */}
+            {coverPhotoId === photo.id && (
+              <div className="absolute bottom-1.5 left-1.5 bg-amber-500 text-black text-[10px] font-medium px-1.5 py-0.5 rounded pointer-events-none">
+                Cover
+              </div>
+            )}
             <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-2">
               <div className="flex gap-1 justify-end">
                 <button
@@ -183,6 +213,18 @@ export function ClientGalleryDetail({ galleryId, onBack }: Props) {
                   className="bg-red-500/80 hover:bg-red-500 text-white text-xs px-2 py-1 rounded transition-colors disabled:opacity-50"
                 >
                   {deleting === photo.id ? '…' : 'Del'}
+                </button>
+              </div>
+              <div className="flex gap-1">
+                <button
+                  onClick={() => handleSetCover(photo)}
+                  className={`text-xs px-2 py-1 rounded transition-colors ${
+                    coverPhotoId === photo.id
+                      ? 'bg-amber-500 text-black'
+                      : 'bg-white/10 hover:bg-white/20 text-white'
+                  }`}
+                >
+                  {coverPhotoId === photo.id ? 'Unset cover' : 'Set cover'}
                 </button>
               </div>
             </div>

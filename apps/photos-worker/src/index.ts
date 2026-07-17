@@ -362,11 +362,10 @@ async function handleVerifyClientGallery(id: string, request: Request, env: Env,
 
 // GET /client-galleries/:id/photos — get photos (public if no password, else admin auth OR gallery token)
 async function handleGetClientPhotos(id: string, request: Request, env: Env, origin: string | null): Promise<Response> {
-  const meta = await env.DB.prepare(`SELECT id, name, password_hash FROM client_galleries WHERE id = ?`).bind(id).first<{ id: string; name: string; password_hash: string | null }>();
+  const meta = await env.DB.prepare(`SELECT id, name, password_hash, cover_photo_id FROM client_galleries WHERE id = ?`).bind(id).first<{ id: string; name: string; password_hash: string | null; cover_photo_id: string | null }>();
   if (!meta) return json({ error: 'Not found' }, env, origin, 404);
 
   if (meta.password_hash) {
-    // Password-protected — require admin auth or valid gallery token
     const adminAuth = isAuthorized(request, env);
     const token = getGalleryToken(request);
     if (!adminAuth && (!token || !(await verifyGalleryToken(id, token, env.UPLOAD_SECRET)))) {
@@ -374,15 +373,39 @@ async function handleGetClientPhotos(id: string, request: Request, env: Env, ori
     }
   }
 
-  const { results } = await env.DB.prepare(`SELECT id, filename, uploaded_at FROM client_photos WHERE gallery_id = ? ORDER BY uploaded_at DESC`)
-    .bind(id).all<{ id: string; filename: string; uploaded_at: string }>();
-  return json({ gallery: { id: meta.id, name: meta.name }, photos: results }, env, origin);
+  const [photosResult, favsResult] = await Promise.all([
+    env.DB.prepare(`SELECT id, filename, uploaded_at FROM client_photos WHERE gallery_id = ? ORDER BY uploaded_at DESC`).bind(id).all<{ id: string; filename: string; uploaded_at: string }>(),
+    env.DB.prepare(`SELECT photo_id FROM client_photo_favorites WHERE gallery_id = ?`).bind(id).all<{ photo_id: string }>(),
+  ]);
+  const favoriteIds = new Set(favsResult.results.map(f => f.photo_id));
+  const photos = photosResult.results.map(p => ({ ...p, favorited: favoriteIds.has(p.id) }));
+  return json({ gallery: { id: meta.id, name: meta.name, cover_photo_id: meta.cover_photo_id }, photos }, env, origin);
+}
+
+// POST /client-galleries/:id/photos/:photoId/favorite — toggle favorite (gallery token or open for public)
+async function handleToggleFavorite(galleryId: string, photoId: string, request: Request, env: Env, origin: string | null): Promise<Response> {
+  const meta = await env.DB.prepare(`SELECT password_hash FROM client_galleries WHERE id = ?`).bind(galleryId).first<{ password_hash: string | null }>();
+  if (!meta) return json({ error: 'Not found' }, env, origin, 404);
+  if (meta.password_hash) {
+    const adminAuth = isAuthorized(request, env);
+    const token = getGalleryToken(request);
+    if (!adminAuth && (!token || !(await verifyGalleryToken(galleryId, token, env.UPLOAD_SECRET)))) {
+      return unauthorized(env, origin);
+    }
+  }
+  const existing = await env.DB.prepare(`SELECT 1 FROM client_photo_favorites WHERE gallery_id = ? AND photo_id = ?`).bind(galleryId, photoId).first();
+  if (existing) {
+    await env.DB.prepare(`DELETE FROM client_photo_favorites WHERE gallery_id = ? AND photo_id = ?`).bind(galleryId, photoId).run();
+    return json({ favorited: false }, env, origin);
+  }
+  await env.DB.prepare(`INSERT INTO client_photo_favorites (gallery_id, photo_id) VALUES (?, ?)`).bind(galleryId, photoId).run();
+  return json({ favorited: true }, env, origin);
 }
 
 // PATCH /client-galleries/:id — update name, password, and/or rename slug (admin only)
 async function handleUpdateClientGallery(id: string, request: Request, env: Env, origin: string | null): Promise<Response> {
   if (!isAuthorized(request, env)) return unauthorized(env, origin);
-  const body = await request.json<{ name?: string; password?: string; newId?: string }>();
+  const body = await request.json<{ name?: string; password?: string; newId?: string; coverPhotoId?: string | null }>();
 
   const existing = await env.DB.prepare(`SELECT id, name FROM client_galleries WHERE id = ?`).bind(id).first<{ id: string; name: string }>();
   if (!existing) return json({ error: 'Not found' }, env, origin, 404);
@@ -410,6 +433,10 @@ async function handleUpdateClientGallery(id: string, request: Request, env: Env,
   if (body.password !== undefined) {
     const hash = body.password ? await sha256Hex(body.password) : null;
     statements.push(env.DB.prepare(`UPDATE client_galleries SET password_hash = ? WHERE id = ?`).bind(hash, newId !== id ? newId : id));
+  }
+  if (body.coverPhotoId !== undefined) {
+    const targetId = newId !== id ? newId : id;
+    statements.push(env.DB.prepare(`UPDATE client_galleries SET cover_photo_id = ? WHERE id = ?`).bind(body.coverPhotoId, targetId));
   }
 
   if (statements.length > 0) await env.DB.batch(statements);
@@ -548,6 +575,12 @@ export default {
     if (cgFromPortfolioMatch) {
       const id = cgFromPortfolioMatch[1];
       if (method === 'POST') return handleAddFromPortfolio(id, request, env, origin);
+    }
+
+    const cgPhotoFavMatch = pathname.match(/^\/client-galleries\/([^/]+)\/photos\/([^/]+)\/favorite$/);
+    if (cgPhotoFavMatch) {
+      const [, galleryId, photoId] = cgPhotoFavMatch;
+      if (method === 'POST') return handleToggleFavorite(galleryId, photoId, request, env, origin);
     }
 
     const cgPhotoMatch = pathname.match(/^\/client-galleries\/([^/]+)\/photos\/([^/]+)$/);

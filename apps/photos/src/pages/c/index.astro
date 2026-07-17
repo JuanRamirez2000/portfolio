@@ -127,6 +127,8 @@ const ACCOUNT_HASH = import.meta.env.PUBLIC_CF_IMAGES_ACCOUNT_HASH;
     loadGallery(token);
   });
 
+  let galleryToken = null;
+
   // Returns true if load succeeded, false if auth failed
   async function loadGallery(token) {
     const headers = token ? { 'X-Gallery-Token': token } : {};
@@ -137,6 +139,7 @@ const ACCOUNT_HASH = import.meta.env.PUBLIC_CF_IMAGES_ACCOUNT_HASH;
       return false;
     }
 
+    galleryToken = token;
     const data = await res.json();
     photos = data.photos;
 
@@ -149,6 +152,19 @@ const ACCOUNT_HASH = import.meta.env.PUBLIC_CF_IMAGES_ACCOUNT_HASH;
 
     renderGrid();
     return true;
+  }
+
+  async function toggleFavorite(photo) {
+    const headers = { 'Content-Type': 'application/json' };
+    if (galleryToken) headers['X-Gallery-Token'] = galleryToken;
+    const res = await fetch(`${WORKER_URL}/client-galleries/${slug}/photos/${photo.id}/favorite`, {
+      method: 'POST',
+      headers,
+    });
+    if (!res.ok) return;
+    const { favorited } = await res.json();
+    photo.favorited = favorited;
+    renderGrid();
   }
 
   async function downloadPhoto(photo) {
@@ -170,6 +186,20 @@ const ACCOUNT_HASH = import.meta.env.PUBLIC_CF_IMAGES_ACCOUNT_HASH;
     img.loading = 'lazy';
     img.className = 'w-full block transition-transform duration-300 group-hover:scale-[1.02]';
     wrapper.appendChild(img);
+
+    // Heart button — always visible when favorited, otherwise appears on hover
+    const heartBtn = document.createElement('button');
+    heartBtn.className = `absolute top-2 right-2 text-lg leading-none transition-all ${
+      photo.favorited
+        ? 'opacity-100 text-pink-500 drop-shadow'
+        : 'opacity-0 group-hover:opacity-100 text-white/70 hover:text-pink-400'
+    }`;
+    heartBtn.textContent = '♥';
+    heartBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      toggleFavorite(photo);
+    });
+    wrapper.appendChild(heartBtn);
 
     // Download button overlay
     const overlay = document.createElement('div');
