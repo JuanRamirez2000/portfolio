@@ -115,14 +115,15 @@ async function handleUpload(request: Request, env: Env, origin: string | null): 
 
   const imageId = await uploadToCFImages(file, env);
 
+  const now = new Date().toISOString();
   await env.DB.prepare(
-    `INSERT INTO photos (id, filename, galleries, ratio, title, alt, year, featured)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+    `INSERT INTO photos (id, filename, galleries, ratio, title, alt, year, featured, uploaded_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
   )
-    .bind(imageId, file.name, JSON.stringify(galleries), ratio, title, alt, year, featured)
+    .bind(imageId, file.name, JSON.stringify(galleries), ratio, title, alt, year, featured, now)
     .run();
 
-  return json({ id: imageId, galleries, filename: file.name }, env, origin, 201);
+  return json({ id: imageId, galleries, filename: file.name, uploaded_at: now, ratio, title, alt, year, featured: featured === 1 }, env, origin, 201);
 }
 
 // GET /photos?gallery=portraits&featured=true

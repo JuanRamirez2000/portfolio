@@ -32,9 +32,9 @@ export function PhotoGrid({ photos, dirtyPhotoIds, onPhotosChange }: Props) {
     let result = gallery === 'all' ? photos : photos.filter(p => p.galleries.includes(gallery));
     if (featuredOnly) result = result.filter(p => p.featured);
     if (yearFilter)   result = result.filter(p => p.year === yearFilter);
-    if (sort === 'newest') result = [...result].sort((a, b) => b.uploaded_at.localeCompare(a.uploaded_at));
-    if (sort === 'oldest') result = [...result].sort((a, b) => a.uploaded_at.localeCompare(b.uploaded_at));
-    if (sort === 'az')     result = [...result].sort((a, b) => (a.title || a.filename).localeCompare(b.title || b.filename));
+    if (sort === 'newest') result = [...result].sort((a, b) => (b.uploaded_at ?? '').localeCompare(a.uploaded_at ?? ''));
+    if (sort === 'oldest') result = [...result].sort((a, b) => (a.uploaded_at ?? '').localeCompare(b.uploaded_at ?? ''));
+    if (sort === 'az')     result = [...result].sort((a, b) => (a.title || a.filename || '').localeCompare(b.title || b.filename || ''));
     return result;
   }, [photos, gallery, sort, featuredOnly, yearFilter]);
 
